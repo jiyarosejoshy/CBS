@@ -1,21 +1,27 @@
 const express = require('express');
-const supabase = require('./config/supabase');
-const adminRoutes = require('./routes/adminRoutes'); // Import admin routes
+const dotenv = require('dotenv');
+const supabase = require('./config/supabase'); // Ensure correct path
+const userRoutes = require('./routes/userRoutes');
+
+dotenv.config();
 
 const app = express();
-const port = process.env.PORT || 5000;
+app.use(express.json()); // Middleware to parse JSON requests
 
-app.use(express.json());
+// ✅ Test Supabase Connection
+(async () => {
+  try {
+    const { data, error } = await supabase.from('users').select('*').limit(1);
+    if (error) throw error;
+    console.log('✅ Supabase connection successful!');
+  } catch (err) {
+    console.error('❌ Supabase connection failed:', err.message);
+    process.exit(1);
+  }
+})();
 
-// Use admin routes
-app.use('/admin', adminRoutes);  // All routes inside adminRoutes will be prefixed with "/admin"
+// ✅ API Routes
+app.use('/api/users', userRoutes);
 
-// Example route to fetch users
-app.get('/users', async (req, res) => {
-    const { data, error } = await supabase.from('users').select('*');
-    if (error) return res.status(500).json({ error: error.message });
-    res.json(data);
-});
-
-// Start server
-app.listen(port, () => console.log(`Backend running on http://localhost:${port}`));
+const PORT = process.env.PORT || 5000;
+app.listen(PORT, () => console.log(`🚀 Server running on port ${PORT}`));
