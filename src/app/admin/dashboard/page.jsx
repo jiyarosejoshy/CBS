@@ -2,7 +2,7 @@
 import * as React from "react";
 import { DataGrid } from "@mui/x-data-grid";
 import Paper from "@mui/material/Paper";
-
+import Navbar from "@/components/ui/Navbar-admin";
 // Function to generate a random timestamp within the last 30 days
 const getRandomTimestamp = () => {
   const now = new Date();
@@ -75,6 +75,8 @@ const rows = [
   
 export default function DataTable() {
   return (
+    <div className="">
+      <Navbar/>
     <div className="flex flex-col justify-center items-center gap-10 h-screen">
       <div className="text-4xl font-semibold">Admin Panel</div>
       <div className="w-1/2">
@@ -88,6 +90,7 @@ export default function DataTable() {
           />
         </Paper>
       </div>
+    </div>
     </div>
   );
 }

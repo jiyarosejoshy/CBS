@@ -1,5 +1,5 @@
 "use client";  // Required for client-side navigation
-import account from "./account/page";
+import account from "./user/account/page";
 import React from "react";
 import { useRouter } from "next/navigation";
 import { Label } from "@/components/ui/label";
