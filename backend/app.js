@@ -1,27 +1,46 @@
 const express = require('express');
 const dotenv = require('dotenv');
-const supabase = require('./config/supabase'); // Ensure correct path
-const userRoutes = require('./routes/userRoutes');
+const supabase = require('./config/supabase');
 
+// Load environment variables
 dotenv.config();
 
-const app = express();
-app.use(express.json()); // Middleware to parse JSON requests
+// Import routes
+const userRoutes = require('./routes/userRoutes');
+const adminRoutes = require('./routes/adminRoutes');
+const transactionRoutes = require('./routes/transactionRoutes');
 
-// ✅ Test Supabase Connection
-(async () => {
+const app = express();
+
+// Middleware
+app.use(express.json());
+
+// Test database connection on startup
+const verifyDatabaseConnection = async () => {
   try {
-    const { data, error } = await supabase.from('users').select('*').limit(1);
+    const { error } = await supabase.from('users').select('*').limit(1);
     if (error) throw error;
-    console.log('✅ Supabase connection successful!');
-  } catch (err) {
-    console.error('❌ Supabase connection failed:', err.message);
+    console.log('Database connection verified');
+  } catch (error) {
+    console.error('Database connection failed:', error.message);
     process.exit(1);
   }
-})();
+};
 
-// ✅ API Routes
+// API Routes
 app.use('/api/users', userRoutes);
+app.use('/api/admin', adminRoutes);
+app.use('/api/transactions', transactionRoutes);
 
+// Basic error handling
+app.use((err, req, res, next) => {
+  console.error(err.stack);
+  res.status(500).json({ error: 'Something went wrong' });
+});
+
+// Start server
 const PORT = process.env.PORT || 5000;
-app.listen(PORT, () => console.log(`🚀 Server running on port ${PORT}`));
+app.listen(PORT, async () => {
+  console.log(`Server running on port ${PORT}`);
+  await verifyDatabaseConnection();
+});
