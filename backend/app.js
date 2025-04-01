@@ -1,17 +1,17 @@
 const express = require('express');
-const supabase = require('./config/supabase');
+const dotenv = require('dotenv');
+const connectDB = require('./config/db');
+const userRoutes = require('./routes/userRoutes');
+
+dotenv.config();
+connectDB();
 
 const app = express();
-const port = process.env.PORT || 5000;
+app.use(express.json()); // Middleware to parse JSON requests
 
-app.use(express.json());
+// ✅ API Routes
+app.use('/api/users', userRoutes);
 
-// Example route to fetch users
-app.get('/users', async (req, res) => {
-    const { data, error } = await supabase.from('users').select('*');
-    if (error) return res.status(500).json({ error: error.message });
-    res.json(data);
-});
+const PORT = process.env.PORT || 5000;
+app.listen(PORT, () => console.log(`Server running on port ${PORT}`));
 
-// Start server
-app.listen(port, () => console.log(`Backend running on http://localhost:${port}`));
