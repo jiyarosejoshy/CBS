@@ -7,13 +7,6 @@ const getAllAccountHolders = async () => {
   return data;
 };
 
-// Get customers with balance > 10000
-const getHighBalanceCustomers = async () => {
-  const { data, error } = await supabase.from('accounts').select('*').gt('balance', 10000);
-  if (error) throw error;
-  return data;
-};
-
 // Delete an account
 const deleteAccount = async (id) => {
   const { error } = await supabase.from('accounts').delete().eq('id', id);
@@ -39,7 +32,7 @@ const transferFunds = async (fromAccountId, toAccountId, amount) => {
   if (debitError) throw debitError;
 
   const { data: receiver, error: receiverError } = await supabase
-    .from('accounts')
+    .from('users')
     .select('balance')
     .eq('id', toAccountId)
     .single();
@@ -47,7 +40,7 @@ const transferFunds = async (fromAccountId, toAccountId, amount) => {
   if (receiverError) throw receiverError;
 
   const { error: creditError } = await supabase
-    .from('accounts')
+    .from('users')
     .update({ balance: receiver.balance + amount })
     .eq('id', toAccountId);
 
@@ -56,4 +49,4 @@ const transferFunds = async (fromAccountId, toAccountId, amount) => {
   return { message: 'Transfer successful' };
 };
 
-module.exports = { getAllAccountHolders, getHighBalanceCustomers, deleteAccount, transferFunds };
+module.exports = { getAllAccountHolders, deleteAccount, transferFunds };
