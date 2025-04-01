@@ -56,4 +56,4 @@ const transferFunds = async (fromAccountId, toAccountId, amount) => {
   return { message: 'Transfer successful' };
 };
 
-module.exports = { getAllAccountHolders, getHighBalanceCustomers, deleteAccount, transferFunds };
+module.exports = { getAllAccountHolders, deleteAccount, transferFunds };

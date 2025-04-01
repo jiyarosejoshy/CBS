@@ -1,5 +1,6 @@
 "use client";  // Required for client-side navigation
 import React from "react";
+import NavBar from "@/components/ui/Navbar-admin";
 import { Table, TableBody, TableCell, TableHead, TableRow, Typography, Card, CardContent } from "@mui/material";
 
 // Dummy loan data
@@ -118,6 +119,8 @@ const loanData = [
 
 const LoansPage = () => {
   return (
+    <div>
+        <NavBar/>
     <div style={{ maxWidth: '1200px', margin: '0 auto', padding: '20px' }}>
       <Typography variant="h4" component="h1" gutterBottom align="center">
         Loan Information
@@ -165,6 +168,7 @@ const LoansPage = () => {
           </Table>
         </CardContent>
       </Card>
+    </div>
     </div>
   );
 };

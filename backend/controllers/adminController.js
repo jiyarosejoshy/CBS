@@ -10,16 +10,6 @@ const getAccounts = async (req, res) => {
   }
 };
 
-// Get customers with balance > 10000
-const getHighBalance = async (req, res) => {
-  try {
-    const customers = await getHighBalanceCustomers();
-    res.json(customers);
-  } catch (error) {
-    res.status(500).send(error.message);
-  }
-};
-
 // Delete an account
 const removeAccount = async (req, res) => {
   const { id } = req.params;
@@ -42,4 +32,4 @@ const transfer = async (req, res) => {
   }
 };
 
-module.exports = { getAccounts, getHighBalance, removeAccount, transfer };
+module.exports = { getAccounts, removeAccount, transfer };

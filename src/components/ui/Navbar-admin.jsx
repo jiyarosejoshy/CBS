@@ -7,9 +7,9 @@ const NavBar = () => {
         <h1 className="font-bold text-lg">Bank ERP</h1>
         <div className="flex gap-4">
         <Link href="/admin/dashboard" className="hover:text-gray-400">Dashboard</Link>
-          {/* <Link href="/user/account" className="hover:text-gray-400">Account</Link>
-          <Link href="/user/transaction" className="hover:text-gray-400">Transactions</Link>  
-          <Link href="/user/loan" className="hover:text-gray-400">Loan</Link> */}
+        <Link href="/admin/approve-reject" className="hover:text-gray-400">Approvals</Link>
+        <Link href="/admin/loan-application" className="hover:text-gray-400">Loan Application</Link>
+         
         </div>
       </div>
     </nav>
