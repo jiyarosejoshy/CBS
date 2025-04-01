@@ -41,5 +41,11 @@ const deleteTransaction = async (id) => {
   if (error) throw error;
   return { message: 'Transaction deleted successfully' };
 };
+const getAllTransactionsByAdmin = async () => {
+  const { data, error } = await supabase.from('transactions').select('*');
+  if (error) throw error;
+  return { rows: data };
+};
 
-module.exports = { getAllTransactions, getTransactionById, createTransaction, updateTransaction, deleteTransaction };
+
+module.exports = {getAllTransactionsByAdmin,getAllTransactions, getTransactionById, createTransaction, updateTransaction, deleteTransaction };

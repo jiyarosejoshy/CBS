@@ -1,4 +1,5 @@
-const { getAllAccountHolders, getHighBalanceCustomers, deleteAccount, transferFunds } = require('../models/adminModel');
+const { getAllAccountHolders, deleteAccount, transferFunds } = require('../models/adminModel');
+
 
 // Display all account holders
 const getAccounts = async (req, res) => {
@@ -32,4 +33,6 @@ const transfer = async (req, res) => {
   }
 };
 
-module.exports = { getAccounts, removeAccount, transfer };
+
+
+module.exports = {getAccounts, removeAccount, transfer };

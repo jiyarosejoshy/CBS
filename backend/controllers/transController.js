@@ -4,7 +4,7 @@ const {
     getAllTransactions, 
     getTransactionById, 
     updateTransaction, 
-    deleteTransaction 
+    deleteTransaction,getAllTransactionsByAdmin
 } = require('../models/transactionModel');
 
 // ✅ Create a new transaction
@@ -50,5 +50,9 @@ const removeTransaction = asyncHandler(async (req, res) => {
     }
     res.json({ message: 'Transaction removed' });
 });
+const getAllUserTransactions = asyncHandler(async (req, res) => {
+    const transactions = await getAllTransactionsByAdmin();
+    res.json(transactions.rows);
+});
 
-module.exports = { addTransaction, getTransactions, getTransaction, modifyTransaction, removeTransaction };
+module.exports = { getAllUserTransactions,addTransaction, getTransactions, getTransaction, modifyTransaction, removeTransaction };

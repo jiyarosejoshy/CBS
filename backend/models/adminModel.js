@@ -7,12 +7,7 @@ const getAllAccountHolders = async () => {
   return data;
 };
 
-// Get customers with balance > 10000
-const getHighBalanceCustomers = async () => {
-  const { data, error } = await supabase.from('user').select('*').gt('balance', 10000);
-  if (error) throw error;
-  return data;
-};
+
 
 // Delete an account
 const deleteAccount = async (id) => {
