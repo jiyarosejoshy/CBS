@@ -21,7 +21,7 @@ const supabase = createClient(supabaseUrl, supabaseAnonKey);
 // Test connection
 (async () => {
   try {
-    const { data, error } = await supabase.from('accounts').select('*').limit(1);
+    const { data, error } = await supabase.from('users').select('*').limit(1);
 
     if (error) throw error;
 
