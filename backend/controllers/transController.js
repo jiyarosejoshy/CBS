@@ -8,12 +8,52 @@ const {
     deleteTransaction
 } = require('../models/transModel');
 
-// ✅ Create a new transaction
-const addTransaction = asyncHandler(async (req, res) => {
-    const { account_no, first_name, last_name, type, balance } = req.body;
-    const transaction = await createTransaction(account_no, first_name, last_name, type, balance);
-    res.status(201).json(transaction);  // ✅ Removed .rows[0]
-});
+
+
+const addTransaction = async (req, res) => {
+    try {
+        console.log("Incoming Request Body:", req.body);  
+
+        const { account_no, first_name, last_name, type, balance } = req.body;
+
+        if (!account_no || !first_name || !last_name || !type || !balance) {
+            return res.status(400).json({ message: "All fields are required" });
+        }
+
+        // ✅ Insert into Supabase transactions table
+        const { data, error } = await supabase
+            .from("transactions")  // Your Supabase table name
+            .insert([
+                {
+                    account_no,
+                    first_name,
+                    last_name,
+                    type,
+                    balance,
+                    transac_time: new Date().toISOString(), // Automatically add timestamp
+                }
+            ]);
+
+        if (error) {
+            console.error("Supabase Insert Error:", error);
+            return res.status(500).json({ message: "Database insert failed", error: error.message });
+        }
+
+        return res.status(201).json({
+            message: "Transaction added successfully",
+            transaction: data
+        });
+
+    } catch (error) {
+        console.error("Error in addTransaction:", error);
+        return res.status(500).json({ error: "Something went wrong" });
+    }
+};
+
+
+
+
+
 
 // ✅ Get all transactions
 const getAllTransactions = asyncHandler(async (req, res) => {
