@@ -83,5 +83,19 @@ const getLoans = async (userId) => {
     throw err;
   }
 };
+const addLoanToDB = async (loanData) => {
+  const { data, error } = await supabase.from("loans").insert([loanData]);
+  if (error) throw error;
+  return data;
+};
+const getLoanIdsAndStatus = async () => {
+  const { data, error } = await supabase
+    .from('loans')
+    .select('loan_id, status'); // Select only loan_id and status
 
-module.exports = {getLoans,getUserDetails,getUserAccounts, getAllUsers, getUserByEmail, createUser, updateUser, deleteUser };
+  if (error) throw error;
+  return data;
+};
+
+
+module.exports = {getLoanIdsAndStatus,addLoanToDB,getLoans,getUserDetails,getUserAccounts, getAllUsers, getUserByEmail, createUser, updateUser, deleteUser };
