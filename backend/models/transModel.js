@@ -21,7 +21,7 @@ const createTransaction = async (account_no, first_name, last_name, type, balanc
     first_name, 
     last_name, 
     type, 
-    balance, 
+    amount,
     transac_time: new Date().toISOString() 
   }]).select().single();
   if (error) throw console.log(error);

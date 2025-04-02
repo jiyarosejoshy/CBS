@@ -72,7 +72,7 @@
 //         <div className="bg-black p-4 rounded-lg shadow">
 //           {loans.map((loan) => (
 //             <div key={loan.loan_id} className="flex justify-between border-b border-gray-700 py-4">
-//               <div className="w-2/3">
+//               <div className="w-2/3">2
 //                 <p><strong>Loan ID:</strong> {loan.loan_id}</p>
 //                 <p><strong>Loan Type:</strong> {loan.loan_type}</p>
 //                 <p><strong>Loan Amount:</strong> ${loan.loan_amount.toLocaleString()}</p>
