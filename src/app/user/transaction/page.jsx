@@ -4,6 +4,12 @@ import axios from "axios";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import NavBar from "@/components/ui/NavBar";
+import { createClient } from "@supabase/supabase-js";
+
+// ✅ Initialize Supabase client
+const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL;
+const supabaseKey = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY;
+const supabase = createClient(supabaseUrl, supabaseKey);
 
 const Transaction = () => {
   const [transactions, setTransactions] = useState([]);
@@ -19,34 +25,59 @@ const Transaction = () => {
       try {
         const response = await axios.get("http://localhost:5000/api/transactions");
         setTransactions(response.data);
+        console.log("Fetched transactions:", response.data);
       } catch (error) {
-        console.log(error);
+        console.error("Error fetching transactions:", error);
       } finally {
         setLoading(false);
       }
     };
+
+    const subscribeToTransactions = async () => {
+      try {
+        supabase
+          .channel("transactions-channel")
+          .on(
+            "postgres_changes",
+            { event: "INSERT", schema: "public", table: "transactions" },
+            (payload) => {
+              console.log("New transaction received:", payload.new);
+              setTransactions((prev) => [payload.new, ...prev]);
+            }
+          )
+          .subscribe();
+      } catch (error) {
+        console.error("Error setting up real-time updates:", error);
+      }
+    };
+
     fetchTransactions();
+    subscribeToTransactions();
+
+    return () => {
+      supabase.removeChannel("transactions-channel");
+    };
   }, []);
 
   const handleTransaction = async (type) => {
-    const formattedTime = new Date().toLocaleString();
     if (!amount || isNaN(amount) || amount <= 0) {
       alert("Please enter a valid amount");
       return;
     }
 
     const newTransaction = {
-      transac_time: formattedTime,
+      transac_time: new Date().toISOString(), // Store timestamps in ISO format
       account_no: accountNo,
       first_name: firstName,
       last_name: lastName,
       type,
-      amount,
+      amount: parseFloat(amount),
     };
 
     try {
       const response = await axios.post("http://localhost:5000/api/transactions", newTransaction);
-      setTransactions([response.data, ...transactions]);
+      console.log("Transaction added:", response.data);
+      setTransactions((prev) => [response.data, ...prev]); // Optimistically update the list
       resetForm();
     } catch (error) {
       console.error("Error adding transaction:", error);
@@ -61,117 +92,60 @@ const Transaction = () => {
     setTransactionType("");
   };
 
-  return (
-    <div className="min-h-screen bg-gray-50">
-      <NavBar />
-      
-      <div className="max-w-4xl mx-auto p-6">
-        {/* Transaction Form Section */}
-        <div className="bg-white rounded-lg shadow-md p-6 mb-8">
-          <h1 className="text-2xl font-bold text-gray-800 mb-6">New Transaction</h1>
-          
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-6">
-            <div>
-              <label className="block text-sm font-medium text-gray-700 mb-1">Amount</label>
-              <Input
-                className="w-full bg-gray-50 border border-gray-300 rounded-md"
-                placeholder="Enter amount"
-                value={amount}
-                onChange={(e) => setAmount(e.target.value)}
-              />
-            </div>
-            
-            <div>
-              <label className="block text-sm font-medium text-gray-700 mb-1">Account Number</label>
-              <Input
-                className="w-full bg-gray-50 border border-gray-300 rounded-md"
-                placeholder="Account Number"
-                value={accountNo}
-                onChange={(e) => setAccountNo(e.target.value)}
-              />
-            </div>
-            
-            <div>
-              <label className="block text-sm font-medium text-gray-700 mb-1">First Name</label>
-              <Input
-                className="w-full bg-gray-50 border border-gray-300 rounded-md"
-                placeholder="First Name"
-                value={firstName}
-                onChange={(e) => setFirstName(e.target.value)}
-              />
-            </div>
-            
-            <div>
-              <label className="block text-sm font-medium text-gray-700 mb-1">Last Name</label>
-              <Input
-                className="w-full bg-gray-50 border border-gray-300 rounded-md"
-                placeholder="Last Name"
-                value={lastName}
-                onChange={(e) => setLastName(e.target.value)}
-              />
-            </div>
-          </div>
-          
-          <div className="flex space-x-4">
-            <Button 
-              className="flex-1 bg-green-600 hover:bg-green-700 text-white"
-              onClick={() => handleTransaction("Deposit")}
-            >
-              Deposit
-            </Button>
-            <Button 
-              className="flex-1 bg-red-600 hover:bg-red-700 text-white"
-              onClick={() => handleTransaction("Withdrawal")}
-            >
-              Withdraw
-            </Button>
-          </div>
-        </div>
+  if (loading) return <div>Loading transactions...</div>;
 
-        {/* Transactions History Section */}
-        <div className="bg-white rounded-lg shadow-md p-6">
-          <h2 className="text-2xl font-bold text-gray-800 mb-4">Recent Transactions</h2>
-          
-          {loading ? (
-            <div className="flex justify-center items-center h-32">
-              <p className="text-gray-500">Loading transactions...</p>
-            </div>
-          ) : transactions.length > 0 ? (
-            <div className="overflow-x-auto">
-              <table className="min-w-full divide-y divide-gray-200">
-                <thead className="bg-gray-50">
+  return (
+    <div>
+      <NavBar />
+      <div className="max-w-7xl mx-auto p-6 bg-black text-white rounded-lg shadow-md mt-5">
+        <h1 className="text-3xl font-bold mb-4">Transaction</h1>
+
+        {transactions.length > 0 && (
+          <div>
+            <h2 className="text-2xl font-semibold mt-6">Recent Transactions</h2>
+            <div className="bg-[#383838] p-4 rounded-lg mt-2 shadow">
+              <table className="min-w-full table-auto">
+                <thead>
                   <tr>
-                    <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Date</th>
-                    <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Type</th>
-                    <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Amount</th>
+                    <th className="text-left p-2">Date</th>
+                    <th className="text-left p-2">Type</th>
+                    <th className="text-left p-2">Amount</th>
                   </tr>
                 </thead>
-                <tbody className="bg-white divide-y divide-gray-200">
+                <tbody>
                   {transactions.map((tx) => (
-                    <tr key={tx.trans_id}>
-                      <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
-                        {new Date(tx.transac_time).toLocaleString()}
-                      </td>
-                      <td className="px-6 py-4 whitespace-nowrap text-sm">
-                        <span className={`font-medium ${
-                          tx.type === "Deposit" ? "text-green-600" : "text-red-600"
-                        }`}>
+                    <tr key={tx.trans_id} className="border-b border-gray-700">
+                      <td className="p-2">{new Date(tx.transac_time).toLocaleString()}</td>
+                      <td className="p-2">
+                        <span className={tx.type === "Deposit" ? "text-green-400" : "text-red-400"}>
                           {tx.type}
                         </span>
                       </td>
-                      <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
-                        ${tx.amount}
-                      </td>
+                      <td className="p-2">${tx.amount}</td>
                     </tr>
                   ))}
                 </tbody>
               </table>
             </div>
-          ) : (
-            <div className="flex justify-center items-center h-32">
-              <p className="text-gray-500">No transactions found</p>
-            </div>
-          )}
+          </div>
+        )}
+
+        <div className="mt-6">
+          <h2 className="text-2xl font-semibold">New Transaction</h2>
+
+          <Input className="bg-gray-800 border-gray-600 text-white flex-1 mt-4" placeholder="Enter amount" value={amount} onChange={(e) => setAmount(e.target.value)} />
+          <Input className="bg-gray-800 border-gray-600 text-white flex-1 mt-4" placeholder="Account Number" value={accountNo} onChange={(e) => setAccountNo(e.target.value)} />
+          <Input className="bg-gray-800 border-gray-600 text-white flex-1 mt-4" placeholder="First Name" value={firstName} onChange={(e) => setFirstName(e.target.value)} />
+          <Input className="bg-gray-800 border-gray-600 text-white flex-1 mt-4" placeholder="Last Name" value={lastName} onChange={(e) => setLastName(e.target.value)} />
+
+          <div className="flex items-center gap-4 mt-4">
+            <Button variant="default" onClick={() => handleTransaction("Deposit")}>
+              Deposit
+            </Button>
+            <Button variant="destructive" onClick={() => handleTransaction("Withdrawal")}>
+              Withdraw
+            </Button>
+          </div>
         </div>
       </div>
     </div>
@@ -179,3 +153,185 @@ const Transaction = () => {
 };
 
 export default Transaction;
+
+// "use client";
+// import React, { useState, useEffect } from "react";
+// import axios from "axios";
+// import { Button } from "@/components/ui/button";
+// import { Input } from "@/components/ui/input";
+// import NavBar from "@/components/ui/NavBar";
+
+// const Transaction = () => {
+//   const [transactions, setTransactions] = useState([]);
+//   const [loading, setLoading] = useState(true);
+//   const [amount, setAmount] = useState("");
+//   const [accountNo, setAccountNo] = useState("");
+//   const [firstName, setFirstName] = useState("");
+//   const [lastName, setLastName] = useState("");
+//   const [transactionType, setTransactionType] = useState("");
+
+//   useEffect(() => {
+//     const fetchTransactions = async () => {
+//       try {
+//         const response = await axios.get("http://localhost:5000/api/transactions");
+//         setTransactions(response.data);
+//       } catch (error) {
+//         console.log(error);
+//       } finally {
+//         setLoading(false);
+//       }
+//     };
+//     fetchTransactions();
+//   }, []);
+
+//   const handleTransaction = async (type) => {
+//     const formattedTime = new Date().toLocaleString();
+//     if (!amount || isNaN(amount) || amount <= 0) {
+//       alert("Please enter a valid amount");
+//       return;
+//     }
+
+//     const newTransaction = {
+//       transac_time: formattedTime,
+//       account_no: accountNo,
+//       first_name: firstName,
+//       last_name: lastName,
+//       type,
+//       amount,
+//     };
+
+//     try {
+//       const response = await axios.post("http://localhost:5000/api/transactions", newTransaction);
+//       setTransactions([response.data, ...transactions]);
+//       resetForm();
+//     } catch (error) {
+//       console.error("Error adding transaction:", error);
+//     }
+//   };
+
+//   const resetForm = () => {
+//     setAmount("");
+//     setAccountNo("");
+//     setFirstName("");
+//     setLastName("");
+//     setTransactionType("");
+//   };
+
+//   return (
+//     <div className="min-h-screen bg-gray-50">
+//       <NavBar />
+      
+//       <div className="max-w-4xl mx-auto p-6">
+//         {/* Transaction Form Section */}
+//         <div className="bg-white rounded-lg shadow-md p-6 mb-8">
+//           <h1 className="text-2xl font-bold text-gray-800 mb-6">New Transaction</h1>
+          
+//           <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-6">
+//             <div>
+//               <label className="block text-sm font-medium text-gray-700 mb-1">Amount</label>
+//               <Input
+//                 className="w-full bg-gray-50 border border-gray-300 rounded-md"
+//                 placeholder="Enter amount"
+//                 value={amount}
+//                 onChange={(e) => setAmount(e.target.value)}
+//               />
+//             </div>
+            
+//             <div>
+//               <label className="block text-sm font-medium text-gray-700 mb-1">Account Number</label>
+//               <Input
+//                 className="w-full bg-gray-50 border border-gray-300 rounded-md"
+//                 placeholder="Account Number"
+//                 value={accountNo}
+//                 onChange={(e) => setAccountNo(e.target.value)}
+//               />
+//             </div>
+            
+//             <div>
+//               <label className="block text-sm font-medium text-gray-700 mb-1">First Name</label>
+//               <Input
+//                 className="w-full bg-gray-50 border border-gray-300 rounded-md"
+//                 placeholder="First Name"
+//                 value={firstName}
+//                 onChange={(e) => setFirstName(e.target.value)}
+//               />
+//             </div>
+            
+//             <div>
+//               <label className="block text-sm font-medium text-gray-700 mb-1">Last Name</label>
+//               <Input
+//                 className="w-full bg-gray-50 border border-gray-300 rounded-md"
+//                 placeholder="Last Name"
+//                 value={lastName}
+//                 onChange={(e) => setLastName(e.target.value)}
+//               />
+//             </div>
+//           </div>
+          
+//           <div className="flex space-x-4">
+//             <Button 
+//               className="flex-1 bg-green-600 hover:bg-green-700 text-white"
+//               onClick={() => handleTransaction("Deposit")}
+//             >
+//               Deposit
+//             </Button>
+//             <Button 
+//               className="flex-1 bg-red-600 hover:bg-red-700 text-white"
+//               onClick={() => handleTransaction("Withdrawal")}
+//             >
+//               Withdraw
+//             </Button>
+//           </div>
+//         </div>
+
+//         {/* Transactions History Section */}
+//         <div className="bg-white rounded-lg shadow-md p-6">
+//           <h2 className="text-2xl font-bold text-gray-800 mb-4">Recent Transactions</h2>
+          
+//           {loading ? (
+//             <div className="flex justify-center items-center h-32">
+//               <p className="text-gray-500">Loading transactions...</p>
+//             </div>
+//           ) : transactions.length > 0 ? (
+//             <div className="overflow-x-auto">
+//               <table className="min-w-full divide-y divide-gray-200">
+//                 <thead className="bg-gray-50">
+//                   <tr>
+//                     <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Date</th>
+//                     <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Type</th>
+//                     <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Amount</th>
+//                   </tr>
+//                 </thead>
+//                 <tbody className="bg-white divide-y divide-gray-200">
+//                   {transactions.map((tx) => (
+//                     <tr key={tx.trans_id}>
+//                       <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+//                         {new Date(tx.transac_time).toLocaleString()}
+//                       </td>
+//                       <td className="px-6 py-4 whitespace-nowrap text-sm">
+//                         <span className={`font-medium ${
+//                           tx.type === "Deposit" ? "text-green-600" : "text-red-600"
+//                         }`}>
+//                           {tx.type}
+//                         </span>
+//                       </td>
+//                       <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+//                         ${tx.amount}
+//                       </td>
+//                     </tr>
+//                   ))}
+//                 </tbody>
+//               </table>
+//             </div>
+//           ) : (
+//             <div className="flex justify-center items-center h-32">
+//               <p className="text-gray-500">No transactions found</p>
+//             </div>
+//           )}
+//         </div>
+//       </div>
+//     </div>
+//   );
+// };
+
+// export default Transaction;
