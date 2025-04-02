@@ -10,7 +10,7 @@ router.delete('/accounts/:id', removeAccount);
 // Loan management
 router.get('/loans', getAllLoans);
 router.get('/loans/pending', getPendingLoans);
-router.get('/loans/:loanId', getLoanById);
+router.get('/loans/:loanId', getLoanById);//aavasyilla
 router.patch('/loans/:loanId/approve', approveLoan);
 router.patch('/loans/:loanId/reject', rejectLoan);
 
