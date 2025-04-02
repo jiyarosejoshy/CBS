@@ -1,45 +1,113 @@
 "use client";  // Required for client-side navigation
-import React from "react";
+
+import React, { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
+import axios from "axios";
 import { Label } from "@/components/ui/label";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import NavBar from "@/components/ui/NavBar";
-import Link from "next/link";
 
+const Loan = () => {
+  const [loans, setLoans] = useState([]);
+  const [newLoan, setNewLoan] = useState({
+    loan_id: "",
+    loan_type: "personal",
+    loan_amount: "",
+    interest_rate: "5.5",
+    start_date: "",
+    end_date: "",
+    status: "pending",
+    collateral_type: "Property",
+    collateral_value: "None",
+  });
+  const router = useRouter();
 
-const loan = () => {
-  const user = {
-    name: "Jane Doe",
-    email: "jane@meowmeow.com",
-    accountNumber: "xxxxxx1485",
-    balance: "12,345.67",
-    transactions: [
-      { id: 1, type: "Approved", amount: "15000", date: "2025-03-10" },
-      { id: 2, type: "Waiting", amount: "2000", date: "2025-03-09" },
-    ],
+  useEffect(() => {
+    fetchLoans();
+  }, []);
+
+  const fetchLoans = async () => {
+    try {
+      const response = await axios.get("http://localhost:5000/api/loans");
+      setLoans(response.data);
+    } catch (error) {
+      console.error("Error fetching loans:", error);
+    }
+  };
+
+  const handleCreateLoan = async () => {
+    try {
+      const response = await axios.post("http://localhost:5000/api/loans", newLoan);
+      setLoans([...loans, response.data]);
+      setNewLoan({
+        loan_id: "",
+        loan_type: "personal",
+        loan_amount: "",
+        interest_rate: "5.5",
+        start_date: "",
+        end_date: "",
+        status: "pending",
+        collateral_type: "Property",
+        collateral_value: "None",
+      });
+    } catch (error) {
+      console.error("Error creating loan:", error);
+    }
+  };
+
+  const handleDeleteLoan = async (loan_id) => {
+    try {
+      await axios.delete(`http://localhost:5000/api/loans/${loan_id}`);
+      setLoans(loans.filter((loan) => loan.loan_id !== loan_id));
+    } catch (error) {
+      console.error("Error deleting loan:", error);
+    }
   };
 
   return (
     <div>
-      <NavBar />  
+      <NavBar />
       <div className="max-w-7xl mx-auto p-6 bg-black text-white rounded-lg shadow-md mt-5">
-        <h1 className="text-3xl font-bold mb-4">Loan Details</h1>
-        <div className="bg-black p-4 rounded-lg shadow">
-          <p><strong>Name:</strong> {user.name}</p>
-          <p><strong>Email:</strong> {user.email}</p>
-          <p><strong>Account Number:</strong> {user.accountNumber}</p>
-          <p><strong>Balance:</strong> <span className="text-green-400 font-semibold">{user.balance}</span></p>
+        <h1 className="text-3xl font-bold mb-4">Loan Applications</h1>
+
+        {/* Loan Application Form */}
+        <div className="bg-[#333] p-4 rounded-lg shadow mb-6">
+          <h2 className="text-xl font-semibold mb-2">Apply for a Loan</h2>
+          <Input
+            placeholder="Loan ID"
+            value={newLoan.loan_id}
+            onChange={(e) => setNewLoan({ ...newLoan, loan_id: e.target.value })}
+          />
+          <Input
+            placeholder="Loan Amount"
+            value={newLoan.loan_amount}
+            onChange={(e) => setNewLoan({ ...newLoan, loan_amount: e.target.value })}
+          />
+          <Input
+            placeholder="Start Date (YYYY-MM-DD)"
+            value={newLoan.start_date}
+            onChange={(e) => setNewLoan({ ...newLoan, start_date: e.target.value })}
+          />
+          <Input
+            placeholder="End Date (YYYY-MM-DD)"
+            value={newLoan.end_date}
+            onChange={(e) => setNewLoan({ ...newLoan, end_date: e.target.value })}
+          />
+          <Button className="bg-green-600 mt-4" onClick={handleCreateLoan}>
+            Submit Loan Application
+          </Button>
         </div>
 
-        <h2 className="text-2xl font-semibold mt-6">Loan Status</h2>
-        <div className="bg-[#333333] p-4 rounded-lg mt-2 shadow">
-          {user.transactions.map((tx) => (
-            <div key={tx.id} className="flex justify-between border-b border-gray-700 py-2">
-              <span>{tx.date}</span>
-              <span className={tx.type === "Approved" ? "text-green-400" : "text-red-400"}>
-                {tx.type}: {tx.amount}
-              </span>
+        {/* Loan List */}
+        <h2 className="text-2xl font-semibold mt-6">Existing Loans</h2>
+        <div className="bg-[#444] p-4 rounded-lg mt-2 shadow">
+          {loans.map((loan) => (
+            <div key={loan.loan_id} className="flex justify-between border-b border-gray-700 py-2">
+              <span>{loan.loan_id} - {loan.status}</span>
+              <Button className="bg-red-600" onClick={() => handleDeleteLoan(loan.loan_id)}>
+                Delete
+              </Button>
             </div>
           ))}
         </div>
@@ -48,4 +116,4 @@ const loan = () => {
   );
 };
 
-export default loan;
+export default Loan;

@@ -19,8 +19,10 @@ const Transaction = () => {
       try {
         const response = await axios.get("http://localhost:5000/api/transactions");
         setTransactions(response.data);
+        console.log(data);
       } catch (error) {
-        console.error("Error fetching transactions:", error);
+        console.log(error);
+        // console.error("Error fetching transactions:", error);
       } finally {
         setLoading(false);
       }
