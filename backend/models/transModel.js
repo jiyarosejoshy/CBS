@@ -20,9 +20,9 @@ const createTransaction = async (account_no, first_name, last_name, type, balanc
     account_no, 
     first_name, 
     last_name, 
-    "c/d": type, 
+    type, 
     balance, 
-    transac_time: new Date() 
+    transac_time: new Date().toISOString() 
   }]).select().single();
   if (error) throw error;
   return data;
