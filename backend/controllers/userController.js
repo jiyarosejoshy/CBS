@@ -3,6 +3,7 @@ const bcrypt = require('bcryptjs');
 const jwt = require('jsonwebtoken');
 const { getAllUsers, getUserById, createUser, updateUser, deleteUser } = require('../models/userModel');
 
+
 // ✅ Register a new user
 const registerUser = asyncHandler(async (req, res) => {
     const { name, email, password } = req.body;
@@ -26,7 +27,7 @@ const registerUser = asyncHandler(async (req, res) => {
     });
 });
 
-// ✅ Login user
+// // ✅ Login user
 const loginUser = asyncHandler(async (req, res) => {
     const { email, password } = req.body;
     const user = await getUserById(email);
@@ -45,11 +46,11 @@ const loginUser = asyncHandler(async (req, res) => {
     });
 });
 
-// // ✅ Get all users
-// const getUsers = asyncHandler(async (req, res) => {
-//     const users = await getAllUsers();
-//     res.json(users);
-// });
+// ✅ Get all users
+const getUsers = asyncHandler(async (req, res) => {
+    const users = await getAllUsers();
+    res.json(users);
+});
 
 // ✅ Update user
 const updateUserProfile = asyncHandler(async (req, res) => {

@@ -1,4 +1,9 @@
 const { getUserByEmail } = require("../models/userModel");
+const asyncHandler = require('express-async-handler');
+const bcrypt = require("bcryptjs"); // 🔹 Added bcrypt import
+const jwt = require("jsonwebtoken"); // 🔹 Added jwt import
+const { createUser } = require("../models/userModel");
+
 
 // ✅ Register a new user
 const registerUser = asyncHandler(async (req, res) => {
@@ -47,3 +52,4 @@ const loginUser = asyncHandler(async (req, res) => {
 const generateToken = (id, role) => {
     return jwt.sign({ id, role }, process.env.JWT_SECRET, { expiresIn: "30d" });
 };
+module.exports = { registerUser, loginUser };
