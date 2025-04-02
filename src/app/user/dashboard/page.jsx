@@ -10,10 +10,37 @@ const Dashboard = () => {
   const [transactions, setTransactions] = useState([]);
   const [loading, setLoading] = useState(true);
   const [user, setUser] = useState(null);
-
+  const [account,setAccount] =useState(null);
 
   useEffect(() => {
+    const fetchAccountDetails = async () => {
+  try {
+    const response = await axios.get(
+      "http://localhost:5000/api/user/123e4567-e89b-12d3-a456-426614174001"
+    );
     
+    console.log("Account API Response:", response.data);
+    
+    if (response.data?.accounts?.length > 0) {
+      setAccount({
+        account_no: response.data.accounts[0].account_no || "N/A",
+        balance: response.data.accounts[0].balance || 0
+      });
+    } else {
+      console.error("No accounts found in response");
+      setAccount({
+        account_no: "No Account",
+        balance: 0
+      });
+    }
+  } catch (error) {
+    console.error("Error fetching account details:", error);
+    setAccount({
+      account_no: "Error Loading",
+      balance: 0
+    });
+  }
+};
     const fetchUserDetails = async () => {
       try {
         const response = await axios.get(
@@ -53,7 +80,7 @@ const Dashboard = () => {
         setLoading(false);
       }
     };
-
+    fetchAccountDetails();
     fetchUserDetails();
     fetchTransactions();
   }, []);
@@ -68,10 +95,13 @@ const Dashboard = () => {
             <h2 className="text-xl font-semibold">Account Overview</h2>
             <p><strong>Name:</strong> {user.name}</p>
             <p><strong>Email:</strong> {user.email}</p>
-          </div>
+            <p><strong>Account:</strong> {account ? account.account_no : "Loading..."}</p>
+            <p><strong>Balance:</strong> {account ? `$${account.balance}` : "Loading..."}</p>
+            </div>
         ) : (
           <p>Loading user details...</p>
-        )}
+        )}     
+
 
         {/* Rest of your existing JSX */}
         <div className="grid grid-cols-2 gap-4 mb-6">
