@@ -51,10 +51,6 @@ const addTransaction = async (req, res) => {
 };
 
 
-
-
-
-
 // ✅ Get all transactions
 const getAllTransactions = asyncHandler(async (req, res) => {
     const transactions = await getAllTransactionss();
