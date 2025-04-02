@@ -3,7 +3,7 @@ const router = express.Router();
 const { getUsers, updateUserProfile, removeUser } = require('../controllers/userController');
 const { protect } = require('../middleware/authMiddleware');
 const { registerUser, loginUser } = require("../controllers/authController");
-const { getUserAccountDetails } = require('../controllers/userController');
+const { getUserAccountDetails,fetchLoans } = require('../controllers/userController');
 
 // Public Routes
 // router.post('/register', registerUser);
@@ -14,5 +14,6 @@ const { getUserAccountDetails } = require('../controllers/userController');
 // router.put('/profile', protect, updateUserProfile);
 // router.delete('/:id', protect, removeUser);
 router.get('/account', getUserAccountDetails);
+router.get('/loans/user/:uuid', fetchLoans);
 router.get('/user/:uuid', getUserAccountDetails);
 module.exports = router;
