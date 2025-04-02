@@ -69,5 +69,19 @@ const deleteUser = async (id) => {
   if (error) throw error;
   return { message: 'User deleted successfully' };
 };
+const getLoans = async (userId) => {
+  try {
+    const { data, error } = await supabase
+      .from('loans') // Your loans table in Supabase
+      .select('loan_id, loan_type, loan_amount, interest_rate, status, collateral_type')
+      .eq('user_id', userId); // Filter by user_id
 
-module.exports = {getUserDetails,getUserAccounts, getAllUsers, getUserByEmail, createUser, updateUser, deleteUser };
+    if (error) throw new Error(error.message);
+    return data;
+  } catch (err) {
+    console.error('Error fetching user loans:', err.message);
+    throw err;
+  }
+};
+
+module.exports = {getLoans,getUserDetails,getUserAccounts, getAllUsers, getUserByEmail, createUser, updateUser, deleteUser };

@@ -1,7 +1,7 @@
 const asyncHandler = require('express-async-handler');
 const bcrypt = require('bcryptjs');
 const jwt = require('jsonwebtoken');
-const { getAllUsers, getUserDetails,getUserAccounts, createUser, updateUser, deleteUser } = require('../models/userModel');
+const { getLoans,getAllUsers, getUserDetails,getUserAccounts, createUser, updateUser, deleteUser } = require('../models/userModel');
 
 
 // ✅ Register a new user
@@ -87,4 +87,19 @@ const getUserAccountDetails = async (req, res) => {
         res.status(500).json({ error: error.message });
     }
 };
-module.exports = { getUserAccountDetails,registerUser, loginUser, getUsers, updateUserProfile, removeUser };
+const fetchLoans = async (req, res) => {
+    const { uuid } = req.params;
+  try {
+    const loans = await getLoans(uuid);
+    if (loans.length === 0) {
+      return res.status(404).json({ message: 'No loans found for this user' });
+    }
+    res.status(200).json(loans);
+  } catch (err) {
+    res.status(500).json({ message: 'Error fetching user loans', error: err.message });
+  }s.status(500).json({ message: 'Error fetching loans', error: err.message });
+    
+  };
+  
+
+module.exports = { fetchLoans,getUserAccountDetails,registerUser, loginUser, getUsers, updateUserProfile, removeUser };
