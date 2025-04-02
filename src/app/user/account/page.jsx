@@ -1,56 +1,53 @@
-"use client";  // Required for client-side navigation
+"use client";
 import React from "react";
 import { useRouter } from "next/navigation";
 import { Label } from "@/components/ui/label";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import NavBar from "@/components/ui/NavBar";
+import { Card, CardHeader, CardTitle, CardContent, CardDescription } from "@/components/ui/card";
+import { Table, TableHeader, TableRow, TableHead, TableBody, TableCell } from "@/components/ui/table";
 import Link from "next/link";
 import axios from "axios";
 import { useState, useEffect } from "react";
 
-const account = () => {
+const AccountPage = () => {
   const [transactions, setTransactions] = useState([]);
   const [loading, setLoading] = useState(true);
   const [user, setUser] = useState(null);
-  const [account,setAccount] =useState(null);
+  const [account, setAccount] = useState(null);
 
   useEffect(() => {
     const fetchAccountDetails = async () => {
-  try {
-    const response = await axios.get(
-      "http://localhost:5000/api/user/123e4567-e89b-12d3-a456-426614174001"
-    );
-    
-    console.log("Account API Response:", response.data);
-    
-    if (response.data?.accounts?.length > 0) {
-      setAccount({
-        account_no: response.data.accounts[0].account_no || "N/A",
-        balance: response.data.accounts[0].balance || 0
-      });
-    } else {
-      console.error("No accounts found in response");
-      setAccount({
-        account_no: "No Account",
-        balance: 0
-      });
-    }
-  } catch (error) {
-    console.error("Error fetching account details:", error);
-    setAccount({
-      account_no: "Error Loading",
-      balance: 0
-    });
-  }
-};
-    const fetchUserDetails = async () => {
       try {
         const response = await axios.get(
           "http://localhost:5000/api/user/123e4567-e89b-12d3-a456-426614174001"
         );
         
-        // console.log("Full API response:", response); 
+        if (response.data?.accounts?.length > 0) {
+          setAccount({
+            account_no: response.data.accounts[0].account_no || "N/A",
+            balance: response.data.accounts[0].balance || 0
+          });
+        } else {
+          setAccount({
+            account_no: "No Account",
+            balance: 0
+          });
+        }
+      } catch (error) {
+        setAccount({
+          account_no: "Error Loading",
+          balance: 0
+        });
+      }
+    };
+
+    const fetchUserDetails = async () => {
+      try {
+        const response = await axios.get(
+          "http://localhost:5000/api/user/123e4567-e89b-12d3-a456-426614174001"
+        );
         
         if (response.data && response.data.name && response.data.email) {
           setUser({
@@ -58,15 +55,13 @@ const account = () => {
             email: response.data.email,
           });
         } else {
-          console.error("Unexpected API response structure:", response.data);
-          setUser({  // Fallback data
+          setUser({
             name: "Error Loading Name", 
             email: "Error Loading Email"
           });
         }
       } catch (error) {
-        console.error("Error fetching user details:", error);
-        setUser({  // Fallback data
+        setUser({
           name: "Error Loading Name", 
           email: "Error Loading Email"
         });
@@ -83,56 +78,114 @@ const account = () => {
         setLoading(false);
       }
     };
+
     fetchAccountDetails();
     fetchUserDetails();
     fetchTransactions();
   }, []);
-  return (
-    <div>
-      <NavBar />
-      <div className="max-w-7xl mx-auto p-6 bg-black text-white rounded-lg shadow-md mt-5">
-        <h1 className="text-3xl font-bold mb-4">Account Details</h1>
-        {user ? (
-          <div className="bg-black p-4 rounded-lg shadow mb-6">
-            <p><strong>Name:</strong> {user.name}</p>
-            <p><strong>Email:</strong> {user.email}</p>
-            <p><strong>Account:</strong> {account ? account.account_no : "Loading..."}</p>
-            <p><strong>Balance:</strong> {account ? `$${account.balance}` : "Loading..."}</p>
-            </div>
-        ) : (
-          <p>Loading user details...</p>
-        )}     
 
-<h2 className="text-2xl font-semibold mt-6">Recent Transactions</h2>
-        {loading ? (
-          <p>Loading transactions...</p>
-        ) : (
-          <div className="bg-[#383838] p-4 rounded-lg mt-2 shadow">
-            <table className="min-w-full table-auto">
-              <thead>
-                <tr>
-                  <th className="text-left p-2">Date</th>
-                  <th className="text-left p-2">Type</th>
-                  <th className="text-left p-2">Amount</th>
-                </tr>
-              </thead>
-              <tbody>
-                {transactions.map((tx) => (
-                  <tr key={tx.trans_id} className="border-b border-gray-700">
-                    <td className="p-2">{new Date(tx.transac_time).toLocaleString()}</td>
-                    <td className="p-2">
-                      <span className={tx.type === "Deposit" ? "text-green-400" : "text-red-400"}>{tx.type}</span>
-                    </td>
-                    <td className="p-2">${tx.amount}</td>
-                  </tr>
-                ))}
-              </tbody>
-            </table>
-          </div>
-        )}
+  return (
+    <div className="min-h-screen bg-gray-50">
+      <NavBar />
+      <div className="max-w-6xl mx-auto px-4 py-8">
+        {/* Account Overview Section */}
+        <Card className="mb-8">
+          <CardHeader>
+            <CardTitle className="text-2xl font-bold">Account Overview</CardTitle>
+            <CardDescription>Your personal banking details</CardDescription>
+          </CardHeader>
+          <CardContent>
+            {user ? (
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                <div className="space-y-4">
+                  <div>
+                    <Label className="text-gray-600">Full Name</Label>
+                    <p className="text-lg font-medium mt-1">{user.name}</p>
+                  </div>
+                  <div>
+                    <Label className="text-gray-600">Email Address</Label>
+                    <p className="text-lg font-medium mt-1">{user.email}</p>
+                  </div>
+                </div>
+                <div className="space-y-4">
+                  <div>
+                    <Label className="text-gray-600">Account Number</Label>
+                    <p className="text-lg font-medium mt-1">
+                      {account ? account.account_no : (
+                        <span className="animate-pulse">Loading...</span>
+                      )}
+                    </p>
+                  </div>
+                  <div>
+                    <Label className="text-gray-600">Current Balance</Label>
+                    <p className="text-2xl font-bold text-green-600 mt-1">
+                      {account ? `$${account.balance.toLocaleString()}` : (
+                        <span className="animate-pulse">Loading...</span>
+                      )}
+                    </p>
+                  </div>
+                </div>
+              </div>
+            ) : (
+              <div className="flex items-center justify-center h-32">
+                <p className="text-gray-500">Loading user details...</p>
+              </div>
+            )}
+          </CardContent>
+        </Card>
+
+        {/* Transactions Section */}
+        <Card>
+          <CardHeader>
+            <CardTitle className="text-2xl font-bold">Recent Transactions</CardTitle>
+            <CardDescription>Your account activity</CardDescription>
+          </CardHeader>
+          <CardContent>
+            {loading ? (
+              <div className="flex items-center justify-center h-32">
+                <p className="text-gray-500">Loading transactions...</p>
+              </div>
+            ) : transactions.length > 0 ? (
+              <Table>
+                <TableHeader>
+                  <TableRow>
+                    <TableHead className="w-[200px]">Date & Time</TableHead>
+                    <TableHead>Transaction Type</TableHead>
+                    <TableHead className="text-right">Amount</TableHead>
+                  </TableRow>
+                </TableHeader>
+                <TableBody>
+                  {transactions.map((tx) => (
+                    <TableRow key={tx.trans_id}>
+                      <TableCell className="font-medium">
+                        {new Date(tx.transac_time).toLocaleString()}
+                      </TableCell>
+                      <TableCell>
+                        <span className={`font-medium ${
+                          tx.type === "Deposit" 
+                            ? "text-green-500" 
+                            : "text-red-500"
+                        }`}>
+                          {tx.type}
+                        </span>
+                      </TableCell>
+                      <TableCell className="text-right">
+                        ${tx.amount.toLocaleString()}
+                      </TableCell>
+                    </TableRow>
+                  ))}
+                </TableBody>
+              </Table>
+            ) : (
+              <div className="flex items-center justify-center h-32">
+                <p className="text-gray-500">No transactions found</p>
+              </div>
+            )}
+          </CardContent>
+        </Card>
       </div>
     </div>
   );
 };
 
-export default account;
+export default AccountPage;

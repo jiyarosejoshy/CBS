@@ -6,6 +6,7 @@ import { Label } from "@/components/ui/label";
 import { Card, CardHeader, CardTitle, CardContent } from "@/components/ui/card";
 import { toast } from "sonner";
 import axios from "axios";
+import NavBar from "@/components/ui/NavBar";
 
 const LoanPage = () => {
   const [loanData, setLoanData] = useState({
@@ -17,6 +18,7 @@ const LoanPage = () => {
   const [isLoading, setIsLoading] = useState(false);
   const [existingLoans, setExistingLoans] = useState([]);
   const [loansError, setLoansError] = useState(null);
+
 
   useEffect(() => {
     const fetchLoans = async () => {
@@ -91,6 +93,8 @@ const LoanPage = () => {
   };
 
   return (
+    <div>
+          <NavBar />
     <div className="max-w-3xl mx-auto p-6 space-y-6">
       {/* Loan Application Form */}
       <Card>
@@ -201,6 +205,8 @@ const LoanPage = () => {
         </CardContent>
       </Card>
     </div>
+    </div>
+
   );
 };
 
