@@ -1,8 +1,9 @@
 const asyncHandler = require('express-async-handler');
 const bcrypt = require('bcryptjs');
 const jwt = require('jsonwebtoken');
-const { getLoans,getAllUsers, getUserDetails,getUserAccounts, createUser, updateUser, deleteUser } = require('../models/userModel');
-
+const { getLoanIdsAndStatus,addLoanToDB,getLoans,getAllUsers, getUserDetails,getUserAccounts, createUser, updateUser, deleteUser } = require('../models/userModel');
+const { v4: uuidv4 } = require('uuid'); // Import UUID generator
+const supabase = require('../config/supabase');
 
 // ✅ Register a new user
 const registerUser = asyncHandler(async (req, res) => {
@@ -100,6 +101,62 @@ const fetchLoans = async (req, res) => {
   }s.status(500).json({ message: 'Error fetching loans', error: err.message });
     
   };
-  
 
-module.exports = { fetchLoans,getUserAccountDetails,registerUser, loginUser, getUsers, updateUserProfile, removeUser };
+
+  
+const addLoan = async (req, res) => {
+    try {
+        console.log("Incoming Request Body:", req.body);
+
+        const { user_id, loan_amount, loan_type, interest_rate, start_date, end_date, status, collateral_type, collateral_value } = req.body;
+
+        if (!user_id || !loan_amount || !loan_type || !interest_rate || !start_date || !end_date || !status || !collateral_type || !collateral_value) {
+            return res.status(400).json({ message: "All fields are required" });
+        }
+
+        // ✅ Insert into Supabase loans table
+        const { data, error } = await supabase
+            .from("loans")
+            .insert([
+                {
+                    loan_id: uuidv4(), // Generate a UUID
+                    user_id,
+                    loan_amount,
+                    loan_type,
+                    interest_rate,
+                    start_date,
+                    end_date,
+                    status,
+                    collateral_type,
+                    collateral_value,
+                    created_at: new Date().toISOString(), // Automatically add timestamp
+                    updated_at: new Date().toISOString(),
+                }
+            ]);
+
+        if (error) {
+            console.error("Supabase Insert Error:", error);
+            return res.status(500).json({ message: "Database insert failed", error: error.message });
+        }
+
+        return res.status(201).json({
+            message: "Loan added successfully",
+            loan: data
+        });
+
+    } catch (error) {
+        console.error("Error in addLoan:", error);
+        return res.status(500).json({ error: "Something went wrong" });
+    }
+};
+const fetchLoanIdsAndStatus = async (req, res) => {
+    try {
+      const loans = await getLoanIdsAndStatus();
+      res.json(loans);
+    } catch (error) {
+      res.status(500).json({ error: error.message });
+    }
+  };
+
+
+module.exports = { fetchLoanIdsAndStatus, getLoanIdsAndStatus,addLoan,fetchLoans,getUserAccountDetails,registerUser, loginUser, getUsers, updateUserProfile, removeUser };
