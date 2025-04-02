@@ -1,5 +1,40 @@
 const supabase = require('../config/supabase');
+const { getUserAccountDetails } = require('../controllers/userController');
+const getUserDetails = async (uuid) => {
+  console.log(`Fetching user details for UUID: ${uuid}`);
+  
+  const { data: user, error: userError } = await supabase
+      .from('users')
+      .select('name, email')
+      .eq('id', uuid)
+      .single();
 
+  if (userError) {
+      console.error("User fetch error:", userError);
+      throw new Error(userError.message);
+  }
+
+  console.log("User query result:", user);
+  return user;
+};
+
+// Fetch account details for a given user UUID
+const getUserAccounts = async (uuid) => {
+  console.log(`Fetching accounts for user UUID: ${uuid}`);
+
+  const { data: accounts, error: accountError } = await supabase
+      .from('accounts')
+      .select('account_no, balance')
+      .eq('user_id', uuid);
+
+  if (accountError) {
+      console.error("Accounts fetch error:", accountError);
+      throw new Error(accountError.message);
+  }
+
+  console.log("User accounts:", accounts);
+  return accounts;
+};
 // ✅ Get all users
 const getAllUsers = async () => {
   const { data, error } = await supabase.from('users').select('*');
@@ -35,4 +70,4 @@ const deleteUser = async (id) => {
   return { message: 'User deleted successfully' };
 };
 
-module.exports = { getAllUsers, getUserByEmail, createUser, updateUser, deleteUser };
+module.exports = {getUserDetails,getUserAccounts, getAllUsers, getUserByEmail, createUser, updateUser, deleteUser };

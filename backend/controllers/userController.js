@@ -1,7 +1,7 @@
 const asyncHandler = require('express-async-handler');
 const bcrypt = require('bcryptjs');
 const jwt = require('jsonwebtoken');
-const { getAllUsers, getUserById, createUser, updateUser, deleteUser } = require('../models/userModel');
+const { getAllUsers, getUserDetails,getUserAccounts, createUser, updateUser, deleteUser } = require('../models/userModel');
 
 
 // ✅ Register a new user
@@ -68,5 +68,23 @@ const removeUser = asyncHandler(async (req, res) => {
 const generateToken = (id) => {
     return jwt.sign({ id }, process.env.JWT_SECRET, { expiresIn: '30d' });
 };
+const getUserAccountDetails = async (req, res) => {
+    try {
+        const { uuid } = req.params;
 
-module.exports = { registerUser, loginUser, getUsers, updateUserProfile, removeUser };
+        // Fetch user details
+        const user = await getUserDetails(uuid);
+
+        // Fetch account details separately
+        const accounts = await getUserAccounts(uuid);
+
+        // Combine the results
+        const response = { ...user, accounts };
+
+        res.json(response);
+    } catch (error) {
+        console.error("Error fetching user with accounts:", error.message);
+        res.status(500).json({ error: error.message });
+    }
+};
+module.exports = { getUserAccountDetails,registerUser, loginUser, getUsers, updateUserProfile, removeUser };

@@ -28,7 +28,7 @@ const verifyDatabaseConnection = async () => {
 };
 
 // API Routes
-app.use('/api/users', userRoutes);
+app.use('/api', userRoutes);
 app.use('/admin', adminRoutes);
 app.use('/api/transactions', transactionRoutes);
 
