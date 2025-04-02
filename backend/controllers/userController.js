@@ -30,6 +30,7 @@ const registerUser = asyncHandler(async (req, res) => {
 const loginUser = asyncHandler(async (req, res) => {
     const { email, password } = req.body;
     const user = await getUserById(email);
+    console.log(user);
 
     if (!user || !(await bcrypt.compare(password, user.password))) {
         res.status(401);
@@ -44,11 +45,11 @@ const loginUser = asyncHandler(async (req, res) => {
     });
 });
 
-// ✅ Get all users
-const getUsers = asyncHandler(async (req, res) => {
-    const users = await getAllUsers();
-    res.json(users);
-});
+// // ✅ Get all users
+// const getUsers = asyncHandler(async (req, res) => {
+//     const users = await getAllUsers();
+//     res.json(users);
+// });
 
 // ✅ Update user
 const updateUserProfile = asyncHandler(async (req, res) => {

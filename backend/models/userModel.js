@@ -8,9 +8,9 @@ const getAllUsers = async () => {
 };
 
 // ✅ Get user by ID
-const getUserById = async (id) => {
-  const { data, error } = await supabase.from('users').select('*').eq('id', id).single();
-  if (error) throw error;
+const getUserByEmail = async (email) => {
+  const { data, error } = await supabase.from("users").select("*").eq("email", email).single();
+  if (error) return null;
   return data;
 };
 
@@ -35,4 +35,4 @@ const deleteUser = async (id) => {
   return { message: 'User deleted successfully' };
 };
 
-module.exports = { getAllUsers, getUserById, createUser, updateUser, deleteUser };
+module.exports = { getAllUsers, getUserByEmail, createUser, updateUser, deleteUser };
