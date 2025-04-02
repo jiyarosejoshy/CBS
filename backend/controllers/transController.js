@@ -14,9 +14,10 @@ const addTransaction = async (req, res) => {
     try {
         console.log("Incoming Request Body:", req.body);  
 
-        const { account_no, first_name, last_name, type, balance } = req.body;
+        // const { account_no, first_name, last_name, type, balance } = req.body;
+        const { account_no, first_name, last_name, type,amount} = req.body;
 
-        if (!account_no || !first_name || !last_name || !type || !balance) {
+        if (!account_no || !first_name || !last_name || !type ||!amount) {
             return res.status(400).json({ message: "All fields are required" });
         }
 
@@ -25,11 +26,11 @@ const addTransaction = async (req, res) => {
             .from("transactions")  // Your Supabase table name
             .insert([
                 {
+                    amount, 
                     account_no,
                     first_name,
                     last_name,
-                    type,
-                    balance,
+                    type,//credit/debit
                     transac_time: new Date().toISOString(), // Automatically add timestamp
                 }
             ]);
@@ -41,7 +42,8 @@ const addTransaction = async (req, res) => {
 
         return res.status(201).json({
             message: "Transaction added successfully",
-            transaction: data
+            // transaction: data
+
         });
 
     } catch (error) {
