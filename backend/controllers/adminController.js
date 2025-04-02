@@ -142,13 +142,12 @@ const rejectLoan = async (req, res) => {
 };
 
 module.exports = {
+  getAccounts,
+  removeAccount,
   getAllLoans,
   getLoanById,
   getPendingLoans,
   approveLoan,
   rejectLoan
 };
-module.exports = {getLoan,getAccounts, removeAccount, transfer };
-
-
 

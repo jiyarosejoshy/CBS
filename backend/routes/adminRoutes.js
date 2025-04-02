@@ -1,7 +1,8 @@
 // routes/adminRoutes.js
 const express = require('express');
 const router = express.Router();
-
+const { getAllTransactionsByAdmin } = require('../controllers/transController');
+const {getAccounts,removeAccount,getAllLoans,getLoanById,getPendingLoans,approveLoan,rejectLoan}=require('../controllers/adminController')
 // Account management
 router.get('/accounts', getAccounts);
 router.delete('/accounts/:id', removeAccount);
@@ -14,6 +15,6 @@ router.patch('/loans/:loanId/approve', approveLoan);
 router.patch('/loans/:loanId/reject', rejectLoan);
 
 // Transaction management
-router.use('/transactions', require('./adminTransactionRoutes'));
 
+router.get('/transactions', getAllTransactionsByAdmin);
 module.exports = router;

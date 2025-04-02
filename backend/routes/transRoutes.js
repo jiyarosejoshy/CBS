@@ -2,19 +2,20 @@
 const express = require('express');
 const router = express.Router();
 const { 
+    getAllTransactions,
     addTransaction, 
-    getTransactions, 
+     
     getTransaction, 
     modifyTransaction, 
     removeTransaction 
-} = require('../controllers/transactionController');
+} = require('../controllers/transController');
 const { protect } = require('../middleware/authMiddleware');
 
 // Public
 router.post('/', addTransaction);
 
 // Protected
-router.get('/', protect, getTransactions);
+router.get('/', getAllTransactions);
 router.get('/:id', protect, getTransaction);
 router.put('/:id', protect, modifyTransaction);
 router.delete('/:id', protect, removeTransaction);

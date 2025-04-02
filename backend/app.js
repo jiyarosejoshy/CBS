@@ -8,7 +8,7 @@ dotenv.config();
 // Import routes
 const userRoutes = require('./routes/userRoutes');
 const adminRoutes = require('./routes/adminRoutes');
-const transactionRoutes = require('./routes/transactionRoutes');
+const transactionRoutes = require('./routes/transRoutes');
 
 const app = express();
 
@@ -29,8 +29,8 @@ const verifyDatabaseConnection = async () => {
 
 // API Routes
 app.use('/api/users', userRoutes);
-app.use('/api/admin', adminRoutes);
-app.use('/api/transactions', transactionRoutes);
+app.use('/admin', adminRoutes);
+app.use('/transactions', transactionRoutes);
 
 // Basic error handling
 app.use((err, req, res, next) => {
