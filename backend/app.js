@@ -1,7 +1,7 @@
 const express = require('express');
 const dotenv = require('dotenv');
 const supabase = require('./config/supabase');
-
+const cors = require('cors');
 // Load environment variables
 dotenv.config();
 
@@ -14,7 +14,7 @@ const app = express();
 
 // Middleware
 app.use(express.json());
-
+app.use(cors());
 // Test database connection on startup
 const verifyDatabaseConnection = async () => {
   try {
