@@ -9,6 +9,7 @@ import { Label } from "@/components/ui/label";
 import axios from "axios";
 import { Copy, ExternalLink } from "lucide-react";
 import { useRouter } from "next/navigation";
+import Chatbot from "./components/chatbot";
 
 const CooperativeAccountPage = () => {
   const [transactions, setTransactions] = useState([]);
@@ -327,6 +328,7 @@ const CooperativeAccountPage = () => {
           </div>
         </div>
       </div>
+      <Chatbot/>
     </div>
   );
 };
