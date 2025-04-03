@@ -117,7 +117,7 @@ const Transaction = () => {
               className="flex-1 bg-green-600 hover:bg-green-700 text-white"
               onClick={() => handleTransaction("Deposit")}
             >
-              Deposit
+              Transfer 
             </Button>
             <Button 
               className="flex-1 bg-red-600 hover:bg-red-700 text-white"

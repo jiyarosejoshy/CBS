@@ -1,4 +1,3 @@
-
 "use client";
 import React, { useState, useEffect } from "react";
 import { Card, CardHeader, CardTitle, CardContent, CardDescription } from "@/components/ui/card";
@@ -8,12 +7,16 @@ import NavBar from "@/components/ui/NavBar";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import axios from "axios";
+import { Copy, ExternalLink } from "lucide-react";
+import { useRouter } from "next/navigation";
 
 const CooperativeAccountPage = () => {
   const [transactions, setTransactions] = useState([]);
   const [loading, setLoading] = useState(true);
   const [user, setUser] = useState(null);
   const [account, setAccount] = useState(null);
+  const [showInviteOptions, setShowInviteOptions] = useState(false);
+  const router = useRouter();
 
   useEffect(() => {
     const fetchAccountDetails = async () => {
@@ -51,7 +54,7 @@ const CooperativeAccountPage = () => {
           setUser({
             name: response.data.name || "Community Member",
             email: response.data.email || "member@ourcoop.org",
-            joinDate: "January 15, 2020" // Sample join date
+            joinDate: "January 15, 2020"
           });
         }
       } catch (error) {
@@ -122,20 +125,27 @@ const CooperativeAccountPage = () => {
                       {account ? `₹${account.balance.toLocaleString()}` : "Loading..."}
                     </p>
                   </div>
-                  <div className="space-y-2">
-                    <Label className="text-gray-600">Community Shares</Label>
-                    <p className="text-lg font-medium">50 (₹5,000 value)</p>
-                  </div>
                 </div>
                 
                 <div className="flex flex-wrap gap-4 pt-4">
-                  <Button className="bg-blue-600 hover:bg-blue-700">
+                  <Button 
+                    className="bg-blue-600 hover:bg-blue-700"
+                    onClick={() => router.push("/user/transaction")}
+                  >
                     Make a Transfer
                   </Button>
-                  <Button variant="outline" className="border-blue-600 text-blue-600">
+                  <Button 
+                    variant="outline" 
+                    className="border-blue-600 text-blue-600"
+                    onClick={() => router.push("/user/account")}
+                  >
                     Deposit Funds
                   </Button>
-                  <Button variant="outline" className="border-green-600 text-green-600">
+                  <Button 
+                    variant="outline" 
+                    className="border-green-600 text-green-600"
+                    onClick={() => router.push("/user/loan")}
+                  >
                     Apply for Loan
                   </Button>
                 </div>
@@ -199,44 +209,8 @@ const CooperativeAccountPage = () => {
             <Card className="border-blue-200 bg-blue-50">
               <CardHeader>
                 <CardTitle className="text-xl font-bold text-blue-800">
-                  Your Community Benefits
+                  Member Support
                 </CardTitle>
-              </CardHeader>
-              <CardContent className="space-y-4">
-                <div className="space-y-2">
-                  <h4 className="font-medium">Dividend Earnings</h4>
-                  <p className="text-sm text-gray-600">
-                    Your estimated annual dividend: <span className="font-bold">₹1,250</span>
-                  </p>
-                  <div className="w-full bg-blue-100 rounded-full h-2.5">
-                    <div className="bg-blue-600 h-2.5 rounded-full" style={{width: '65%'}}></div>
-                  </div>
-                </div>
-                
-                <div className="space-y-2">
-                  <h4 className="font-medium">Voting Power</h4>
-                  <p className="text-sm text-gray-600">
-                    You have <span className="font-bold">1 vote</span> in upcoming elections
-                  </p>
-                </div>
-                
-                <div className="space-y-2">
-                  <h4 className="font-medium">Community Impact</h4>
-                  <p className="text-sm text-gray-600">
-                    Your banking has helped fund <span className="font-bold">3 local businesses</span> this year
-                  </p>
-                </div>
-                
-                <Button variant="outline" className="w-full border-blue-600 text-blue-600 mt-4">
-                  View Annual Report
-                </Button>
-              </CardContent>
-            </Card>
-
-            {/* Support Services Card */}
-            <Card>
-              <CardHeader>
-                <CardTitle className="text-xl font-bold">Member Support</CardTitle>
               </CardHeader>
               <CardContent className="space-y-4">
                 <div className="space-y-2">
@@ -259,14 +233,6 @@ const CooperativeAccountPage = () => {
                       <span className="mr-2">🏢</span> Visit your local branch
                     </li>
                   </ul>
-                </div>
-                
-                <div className="space-y-2 pt-2">
-                  <Label>Schedule Appointment</Label>
-                  <Input type="datetime-local" className="w-full" />
-                  <Button className="w-full bg-blue-600 hover:bg-blue-700 mt-2">
-                    Request Callback
-                  </Button>
                 </div>
               </CardContent>
             </Card>
@@ -294,10 +260,68 @@ const CooperativeAccountPage = () => {
                     Online via Zoom
                   </p>
                 </div>
-                
-                <Button variant="outline" className="w-full border-green-600 text-green-600">
-                  View All Events
+              </CardContent>
+            </Card>
+
+            {/* Join the Movement Card */}
+            <Card className="bg-gradient-to-br from-blue-600 to-indigo-700 text-white">
+              <CardHeader>
+                <CardTitle className="text-xl font-bold">
+                  Strengthen Our Cooperative
+                </CardTitle>
+              </CardHeader>
+              <CardContent className="space-y-4">
+                <p>
+                  Help grow our member-owned financial alternative that puts people before profits.
+                </p>
+                <Button 
+                  className="w-full bg-white text-blue-700 hover:bg-blue-50 hover:text-blue-800"
+                  onClick={() => setShowInviteOptions(!showInviteOptions)}
+                >
+                  Invite New Members
                 </Button>
+                
+                {showInviteOptions && (
+                  <div className="mt-4">
+                    <Card className="bg-white/10 border-white/20">
+                      <CardContent className="p-4 space-y-4">
+                        <div className="flex items-center justify-between">
+                          <Label className="text-white/90">WhatsApp Group Link</Label>
+                          <div className="flex gap-2">
+                            <Button 
+                              variant="ghost" 
+                              size="sm" 
+                              className="text-white hover:bg-white/20"
+                              onClick={() => {
+                                navigator.clipboard.writeText("https://chat.whatsapp.com/BankERPCommunityLocality");
+                              }}
+                            >
+                              <Copy className="h-4 w-4 mr-2" />
+                              Copy
+                            </Button>
+                            <Button 
+                              variant="ghost" 
+                              size="sm" 
+                              className="text-white hover:bg-white/20"
+                              onClick={() => window.open("https://chat.whatsapp.com/BankERPCommunityLocality", "_blank")}
+                            >
+                              <ExternalLink className="h-4 w-4 mr-2" />
+                              Open
+                            </Button>
+                          </div>
+                        </div>
+                        <div className="p-3 bg-white/5 rounded-md border border-white/10">
+                          <p className="font-mono text-sm text-white break-all">
+                            https://chat.whatsapp.com/BankERPCommunityLocality
+                          </p>
+                        </div>
+                        <p className="text-sm text-white/70">
+                          Share this link to invite new members to our cooperative banking community
+                        </p>
+                      </CardContent>
+                    </Card>
+                  </div>
+                )}
               </CardContent>
             </Card>
           </div>
@@ -306,6 +330,7 @@ const CooperativeAccountPage = () => {
     </div>
   );
 };
+
 
 export default CooperativeAccountPage;
 // "use client";

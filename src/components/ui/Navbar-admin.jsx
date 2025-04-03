@@ -2,17 +2,33 @@ import Link from "next/link";
 
 const NavBar = () => {
   return (
-    <nav className="bg-black p-4 text-white shadow-md">
-      <div className="max-w-4xl mx-auto flex justify-between items-center">
-        <h1 className="font-bold text-lg">Bank ERP</h1>
-        <div className="flex gap-4">
-        <Link href="/admin/dashboard" className="hover:text-gray-400">Dashboard</Link>
-        <Link href="/admin/approve-reject" className="hover:text-gray-400">Approvals</Link>
-        <Link href="/admin/loan-application" className="hover:text-gray-400">Loan Application</Link>
-         
+    <nav className="bg-gradient-to-r from-blue-900 to-indigo-900 p-4 shadow-lg">
+      <div className="max-w-6xl mx-auto flex justify-between items-center">
+        <Link href="/user/dashboard">
+          <h1 className="font-bold text-2xl bg-gradient-to-r from-cyan-400 to-blue-400 bg-clip-text text-transparent hover:from-cyan-300 hover:to-blue-300 transition-all duration-300">
+            BankERP
+          </h1>
+        </Link>
+        
+        <div className="flex gap-6 items-center">
+          <NavLink href="/admin/dashboard">Dashboard</NavLink>
+          <NavLink href="/admin/user-transaction">User Transactions</NavLink>
+          <NavLink href="/admin/approve-reject">Approvals</NavLink>
+          <NavLink href="/admin/loan-application">Loan Applications</NavLink>
         </div>
       </div>
     </nav>
+  );
+};
+
+const NavLink = ({ href, children }) => {
+  return (
+    <Link href={href} passHref>
+      <span className="relative text-white/90 hover:text-white font-medium transition-colors duration-200 cursor-pointer group">
+        {children}
+        <span className="absolute left-0 -bottom-1 w-0 h-0.5 bg-cyan-400 transition-all duration-300 group-hover:w-full"></span>
+      </span>
+    </Link>
   );
 };
 

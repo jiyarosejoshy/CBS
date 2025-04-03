@@ -15,12 +15,11 @@ const LoansPage = () => {
   }, []);
 
   return (
-    <div>
+    <div flex-col justify-center items-center gap-10 h-screen left-5>
       <NavBar />
-      <div style={{ maxWidth: "1200px", margin: "0 auto", padding: "20px" }}>
-        <Typography variant="h4" component="h1" gutterBottom align="center">
-          Loan Information
-        </Typography>
+      <div style={{ maxWidth: "1200px", margin: "0 auto", padding: "100px" ,leftmargin:"10px"}}>
+      <div className="text-4xl font-semibold px-[325px]">Loan Informations</div>
+       
         <Card>
           <CardContent>
             <Table>
