@@ -10,7 +10,7 @@ const logTransaction = async (req, res) => {
             return res.status(400).json({ message: "All required fields must be provided" });
         }
 
-        const transaction = await TellerModel.createTransaction({
+        const transaction = await TellerModel.createTellerTransaction({
             amount, trans_type, acc_no, first_name, last_name
         });
 
