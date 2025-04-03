@@ -1,10 +1,9 @@
 const supabase = require("../config/supabase");
 
 // ✅ Create a new teller transaction
-const createTellerTransaction = async (trans_id, amount, trans_type, acc_no, first_name, last_name) => {
+const createTellerTransaction = async ( amount, trans_type, acc_no, first_name, last_name) => {
     const { data, error } = await supabase.from("teller").insert([
         {
-            trans_id,
             amount,
             trans_type,
             acc_no,
