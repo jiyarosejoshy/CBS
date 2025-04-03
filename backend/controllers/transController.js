@@ -7,43 +7,67 @@ const {
     updateTransaction, 
     deleteTransaction
 } = require('../models/transModel');
+const { getAccountByNumber, updateBalance } = require("../models/accountModel");
 
 
 
 const addTransaction = async (req, res) => {
     try {
-        console.log("Incoming Request Body:", req.body);  
+        console.log("Incoming Request Body:", req.body);
 
-        // const { account_no, first_name, last_name, type, balance } = req.body;
-        const { account_no, first_name, last_name, type,amount} = req.body;
+        const { account_no, first_name, last_name, type, amount } = req.body;
 
-        if (!account_no || !first_name || !last_name || !type ||!amount) {
+        if (!account_no || !first_name || !last_name || !type || !amount) {
             return res.status(400).json({ message: "All fields are required" });
         }
 
-        // ✅ Insert into Supabase transactions table
+        // ✅ Fetch current account balance
+        const account = await getAccountByNumber(account_no);
+
+        if (!account) {
+            return res.status(404).json({ message: "Account not found" });
+        }
+
+        let newBalance = parseFloat(account.balance);  // Ensure balance is a number
+        const transactionAmount = parseFloat(amount);  // Convert amount to number
+
+        // ✅ Check transaction type and update balance accordingly
+        if (type === "Withdrawal") {
+            if (account.balance < amount) {
+                return res.status(401).json({ message: "Insufficient balance" });
+            }
+            newBalance -= transactionAmount;
+        } else if (type === "Deposit") {
+            newBalance += transactionAmount;
+        } else {
+            return res.status(402).json({ message: "Invalid transaction type" });
+        }
+
+        // ✅ Update account balance
+        await updateBalance(account_no, newBalance);
+
+        // ✅ Insert into transactions table
         const { data, error } = await supabase
-            .from("transactions")  // Your Supabase table name
+            .from("transactions")
             .insert([
                 {
-                    amount, 
+                    amount,
                     account_no,
                     first_name,
                     last_name,
-                    type,//credit/debit
-                    transac_time: new Date().toISOString(), // Automatically add timestamp
+                    type, // credit/debit
+                    transac_time: new Date().toISOString(),
                 }
             ]);
 
         if (error) {
             console.error("Supabase Insert Error:", error);
-            return res.status(500).json({ message: "Database insert failed", error: error.message });
+            return res.status(500).json({ message: "Transaction insert failed", error: error.message });
         }
 
         return res.status(201).json({
-            message: "Transaction added successfully",
-            // transaction: data
-
+            message: "Transaction successful",
+            new_balance: newBalance
         });
 
     } catch (error) {

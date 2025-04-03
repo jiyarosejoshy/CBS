@@ -14,6 +14,9 @@ const getTransactionById = async (id) => {
   return data;
 };
 
+
+
+
 // ✅ Create a new transaction
 const createTransaction = async (account_no, first_name, last_name, type, balance) => {
   const { data, error } = await supabase.from('transactions').insert([{ 
@@ -42,4 +45,4 @@ const deleteTransaction = async (id) => {
   return { message: 'Transaction deleted successfully' };
 };
 
-module.exports = { getAllTransactionss, getTransactionById, createTransaction, updateTransaction, deleteTransaction };
+module.exports = { getAllTransactionss, getTransactionById, createTransaction, updateTransaction, deleteTransaction,};
