@@ -44,6 +44,7 @@ const TellerLogSystem = () => {
   // Fetch transactions from backend
   const fetchTransactions = async () => {
     try {
+      console.log("working");
       const response = await axios.get(`/api/teller/transactions/${currentDate}`);
       setTransactions(response.data.transactions || []);
     } catch (error) {
@@ -231,7 +232,7 @@ const TellerLogSystem = () => {
                     <Button
                       variant="ghost"
                       size="sm"
-                      onClick={copyToClipboard}
+                      onClick={generateTransactionId}
                       className="text-green-600 hover:text-green-800"
                     >
                       <Copy className="h-4 w-4 mr-2" />

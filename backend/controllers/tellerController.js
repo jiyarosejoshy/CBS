@@ -13,6 +13,7 @@ const logTransaction = async (req, res) => {
         const transaction = await TellerModel.createTransaction({
             amount, trans_type, acc_no, first_name, last_name
         });
+        console.log(amount);
 
         return res.status(201).json({ message: "Transaction logged successfully", transaction });
     } catch (error) {
