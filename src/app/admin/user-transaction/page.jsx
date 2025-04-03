@@ -150,5 +150,4 @@ export default function DataTable() {
         </div>
       </div>
     </div>
-  );
-}
+  )};

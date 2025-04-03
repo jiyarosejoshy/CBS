@@ -9,6 +9,8 @@ dotenv.config();
 const userRoutes = require('./routes/userRoutes');
 const adminRoutes = require('./routes/adminRoutes');
 const transactionRoutes = require('./routes/transRoutes');
+const tellerRoutes = require('./routes/tellerRoutes');
+
 const chatRoutes = require('./routes/chatRoutes');
 
 const app = express();
@@ -34,6 +36,7 @@ app.use('/chatbot',chatRoutes)
 app.use('/api', userRoutes);
 app.use('/admin', adminRoutes);
 app.use('/api/transactions', transactionRoutes);
+app.use('/api/teller', tellerRoutes);
 
 // Basic error handling
 app.use((err, req, res, next) => {
