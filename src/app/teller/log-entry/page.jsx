@@ -68,13 +68,11 @@ const TellerLogSystem = () => {
 
     try {
       const response = await axios.post('/api/teller/transaction', {
-        trans_id: transId,
         amount: formData.amount,
         trans_type: formData.trans_type,
         acc_no: formData.acc_no,
         first_name: formData.first_name,
-        last_name: formData.last_name,
-        date: currentDate
+        last_name: formData.last_name
       });
 
       setTransactions(prev => [response.data.transaction, ...prev]);
