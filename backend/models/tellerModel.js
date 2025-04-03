@@ -1,12 +1,18 @@
+
 const supabase = require("../config/supabase");
 
 // ✅ Create a new teller transaction
 const createTellerTransaction = async ( amount, trans_type, acc_no, first_name, last_name) => {
+    const accountNumber = parseInt(acc_no, 10);
+        const transactionAmount = parseFloat(amount);
+        console.log("Received transaction data:", amount,trans_type, acc_no, first_name, last_name);
+
+        // console.log(trans_type, accountNumber, transactionAmount, first_name, last_name);
     const { data, error } = await supabase.from("teller").insert([
         {
-            amount,
+            amount:transactionAmount,
             trans_type,
-            acc_no,
+            acc_no:accountNumber,
             first_name,
             last_name,
             date: new Date().toISOString()
