@@ -16,6 +16,7 @@ const app = express();
 // Middleware
 app.use(express.json());
 app.use(cors());
+
 // Test database connection on startup
 const verifyDatabaseConnection = async () => {
   try {

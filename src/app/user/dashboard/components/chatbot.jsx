@@ -7,17 +7,18 @@ const Chatbot = () => {
   const [messages, setMessages] = useState([]);
   const [input, setInput] = useState("");
   const [isOpen, setIsOpen] = useState(false);
+  const [selectedOption, setSelectedOption] = useState("");
 
-  const sendMessage = async () => {
-    if (!input.trim()) return;
+  const sendMessage = async (message) => {
+    if (!message.trim()) return;
 
-    const userMessage = { role: "user", content: input };
+    const userMessage = { role: "user", content: message };
     setMessages([...messages, userMessage]);
-    setInput("");
 
     try {
       const response = await axios.post("http://localhost:5000/chatbot", {
-        message: input,
+        message: message,
+        option: selectedOption, // Send selected option
       });
 
       console.log("Chatbot Response:", response.data.response);
@@ -27,6 +28,9 @@ const Chatbot = () => {
     } catch (error) {
       console.error("Error sending message:", error);
     }
+
+    setInput("");
+    setSelectedOption(""); // Reset selection
   };
 
   return (
@@ -50,6 +54,24 @@ const Chatbot = () => {
             <button onClick={() => setIsOpen(false)}>
               <X size={20} />
             </button>
+          </div>
+
+          {/* Options */}
+          <div className="p-4 bg-gray-100">
+            <p className="mb-2 font-semibold">Select an option:</p>
+            <div className="grid grid-cols-2 gap-2">
+              {["Account Balance", "Transaction Details", "Customer Care", "Loan Eligibility"].map((option) => (
+                <button
+                  key={option}
+                  className={`p-2 rounded-lg border ${
+                    selectedOption === option ? "bg-blue-500 text-white" : "bg-gray-200"
+                  }`}
+                  onClick={() => setSelectedOption(option)}
+                >
+                  {option}
+                </button>
+              ))}
+            </div>
           </div>
 
           {/* Messages */}
@@ -78,7 +100,7 @@ const Chatbot = () => {
               placeholder="Type your message..."
             />
             <button
-              onClick={sendMessage}
+              onClick={() => sendMessage(input)}
               className="bg-blue-500 text-white px-4 py-2 rounded-r-lg hover:bg-blue-600"
             >
               Send
