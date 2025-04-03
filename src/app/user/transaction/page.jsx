@@ -45,6 +45,7 @@ const Transaction = () => {
     };
 
     try {
+      console.log("New Transaction Data:", newTransaction);
       const response = await axios.post("http://localhost:5000/api/transactions", newTransaction);
       setTransactions([response.data, ...transactions]);
       resetForm();
