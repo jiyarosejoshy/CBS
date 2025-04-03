@@ -27,17 +27,18 @@
 //     scrollToBottom();
 //   }, [messages]);
 
-//   const sendMessage = async () => {
-//     if (!input.trim()) return;
+//   const sendMessage = async (message) => {
+//     if (typeof input !== "string" || !input.trim()) return;
 
-//     const userMessage = { role: "user", content: input };
+//     const userMessage = { role: "user", content: message };
 //     setMessages([...messages, userMessage]);
 //     setInput("");
 //     setIsTyping(true);
 
 //     try {
 //       const response = await axios.post("http://localhost:5000/chatbot", {
-//         message: input,
+//         message: message,
+//         option: selectedOption, // Send selected option
 //       });
 
 //       setTimeout(() => {
@@ -54,6 +55,9 @@
 //       setMessages((prev) => [...prev, errorMessage]);
 //       setIsTyping(false);
 //     }
+
+//     setInput("");
+//     setSelectedOption(""); // Reset selection
 //   };
 
 //   return (
