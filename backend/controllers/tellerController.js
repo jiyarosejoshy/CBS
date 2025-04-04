@@ -1,19 +1,21 @@
+
+const supabase = require('../config/supabase');
 const TellerModel = require("../models/tellerModel");
 const BalanceModel = require("../models/balanceModel");
+
+
 
 // ✅ Log a new transaction in the teller table
 const logTransaction = async (req, res) => {
     try {
         const { amount, trans_type, acc_no, first_name, last_name} = req.body;
-
         if (!amount || !trans_type ) {
             return res.status(400).json({ message: "All required fields must be provided" });
         }
 
-        const transaction = await TellerModel.createTellerTransaction({
+        const transaction = await TellerModel.createTellerTransaction(
             amount, trans_type, acc_no, first_name, last_name
-        });
-        console.log(amount);
+        );
 
         return res.status(201).json({ message: "Transaction logged successfully", transaction });
     } catch (error) {
@@ -32,7 +34,7 @@ const updateTransaction = async (req, res) => {
             return res.status(400).json({ message: "Amount and transaction type are required" });
         }
 
-        const updatedTransaction = await TellerModel.updateTransaction(trans_id, { amount, trans_type });
+        const updatedTransaction = await TellerModel.updateTellerTransaction(trans_id, { amount, trans_type });
 
         return res.status(200).json({ message: "Transaction updated successfully", updatedTransaction });
     } catch (error) {
@@ -46,7 +48,7 @@ const deleteTransaction = async (req, res) => {
     try {
         const { trans_id } = req.params;
 
-        await TellerModel.deleteTransaction(trans_id);
+        await TellerModel.deleteTellerTransaction(trans_id);
 
         return res.status(200).json({ message: "Transaction deleted successfully" });
     } catch (error) {
@@ -89,6 +91,7 @@ const setOpeningBalance = async (req, res) => {
 const getOpeningBalance = async (req, res) => {
     try {
         const { date } = req.params;
+        console.log("Fetching opening balance for date:", date);
         const openBalance = await BalanceModel.getOpeningBalance(date);
 
         return res.status(200).json({ openBalance });

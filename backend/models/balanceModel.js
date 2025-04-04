@@ -1,6 +1,8 @@
 const supabase = require("../config/supabase");
 
 const BalanceModel = {
+
+   
     // ✅ Set opening balance for a date
     async setOpeningBalance(date, open) {
         const { data, error } = await supabase
