@@ -1,4 +1,5 @@
 
+const supabase = require('../config/supabase');
 const TellerModel = require("../models/tellerModel");
 const BalanceModel = require("../models/balanceModel");
 
@@ -90,6 +91,7 @@ const setOpeningBalance = async (req, res) => {
 const getOpeningBalance = async (req, res) => {
     try {
         const { date } = req.params;
+        console.log("Fetching opening balance for date:", date);
         const openBalance = await BalanceModel.getOpeningBalance(date);
 
         return res.status(200).json({ openBalance });
