@@ -48,7 +48,7 @@ const deleteTransaction = async (req, res) => {
     try {
         const { trans_id } = req.params;
 
-        await TellerModel.deleteTransaction(trans_id);
+        await TellerModel.deleteTellerTransaction(trans_id);
 
         return res.status(200).json({ message: "Transaction deleted successfully" });
     } catch (error) {
