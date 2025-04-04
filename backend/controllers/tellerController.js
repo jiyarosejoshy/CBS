@@ -34,7 +34,7 @@ const updateTransaction = async (req, res) => {
             return res.status(400).json({ message: "Amount and transaction type are required" });
         }
 
-        const updatedTransaction = await TellerModel.updateTransaction(trans_id, { amount, trans_type });
+        const updatedTransaction = await TellerModel.updateTellerTransaction(trans_id, { amount, trans_type });
 
         return res.status(200).json({ message: "Transaction updated successfully", updatedTransaction });
     } catch (error) {
