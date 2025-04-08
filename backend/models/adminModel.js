@@ -3,6 +3,7 @@ const supabase = require('../config/supabase');
 // Get all account holders with balance
 const getAllAccountHolders = async () => {
   const { data, error } = await supabase.from('users').select('*');
+
   if (error) throw error;
   return data;
 };

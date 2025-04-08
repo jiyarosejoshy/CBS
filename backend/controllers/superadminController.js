@@ -1,4 +1,4 @@
-const { getTransactionsByBranch, getLoansByBranch } = require("../models/superadminModel");
+const { getTransactionsByBranch, getBranchs,getLoansByBranch } = require("../models/superadminModel");
 
 // Controller function to get transactions by branch
 const fetchTransactionsByBranch = async (req, res) => {
@@ -10,6 +10,19 @@ const fetchTransactionsByBranch = async (req, res) => {
         res.status(500).json({ error: "Error fetching transactions" });
     }
 };
+// superadminController.js
+const getBranchNames = async (req, res) => {
+    console.log("📥 [Controller] getBranchNames() triggered");
+  
+    try { 
+      const branches = await getBranchs();
+      console.log("📤 [Controller] Branches returned from model:", branches);
+      res.json(branches);
+    } catch (err) {
+      console.error("❌ [Controller] Error fetching branches:", err);
+      res.status(500).json({ error: "Server error fetching branches" });
+    }
+  };
 
 // Controller function to get loans by branch
 const fetchLoansByBranch = async (req, res) => {
@@ -22,4 +35,4 @@ const fetchLoansByBranch = async (req, res) => {
     }
 };
 
-module.exports = { fetchTransactionsByBranch, fetchLoansByBranch };
+module.exports = { getBranchNames,fetchTransactionsByBranch, fetchLoansByBranch };
