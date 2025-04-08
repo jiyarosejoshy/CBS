@@ -4,21 +4,21 @@ const BalanceModel = {
 
    
     // ✅ Set opening balance for a date
-    async setOpeningBalance(date, open) {
+    async setOpeningBalance(branch, open) {
         const { data, error } = await supabase
             .from("balances")
-            .upsert([{ date, open }], { onConflict: ["date"] });
-
+            .upsert([{ branch, open }], { onConflict: ["branch"] });
+    
         if (error) throw error;
-        return data;
+        return open;
     },
 
     // ✅ Get opening balance for a date
-    async getOpeningBalance(date) {
+    async getOpeningBalance(branch) {
         const { data, error } = await supabase
             .from("balances")
             .select("open")
-            .eq("date", date)
+            .eq("branch", branch)
             .single();
 
         if (error) return null;
@@ -26,22 +26,22 @@ const BalanceModel = {
     },
 
     // ✅ Set closing balance for a date
-    async setClosingBalance(date, close) {
+    async setClosingBalance(branch, close) {
         const { data, error } = await supabase
             .from("balances")
             .update({ close })
-            .eq("date", date);
+            .eq("branch", branch);
 
         if (error) throw error;
         return data;
     },
 
     // ✅ Get closing balance for a date
-    async getClosingBalance(date) {
+    async getClosingBalance(branch) {
         const { data, error } = await supabase
             .from("balances")
-            .select("close")
-            .eq("date", date)
+            .select("close,date")
+            .eq("branch", branch)
             .single();
 
         if (error) return null;
@@ -49,23 +49,31 @@ const BalanceModel = {
     },
 
     // ✅ Calculate closing balance (Opening Balance + Transactions)
-    async calculateClosingBalance(date) {
-        const openingBalance = await this.getOpeningBalance(date);
+    async calculateClosingBalance(date,branch) {
+        const openingBalance = await this.getOpeningBalance(branch);
+        console.log(branch);
+        console.log(date);
+        console.log(openingBalance);
         if (openingBalance === null) return null;
 
         const { data: transactions, error } = await supabase
             .from("teller")
             .select("amount, trans_type")
+            .eq("branch",branch)
             .eq("date", date);
+
+        
 
         if (error) throw error;
 
         let closingBalance = openingBalance;
         transactions.forEach(({ amount, trans_type }) => {
+            console.log(amount);
+            console.log(trans_type);
             closingBalance += trans_type === "Deposit" ? amount : -amount;
         });
 
-        await this.setClosingBalance(date, closingBalance);
+        await this.setClosingBalance(branch, closingBalance);
         return closingBalance;
     }
 };

@@ -18,7 +18,7 @@ const AdminDashboard = () => {
         <Card className="bg-gradient-to-r from-blue-800 to-indigo-900 text-white">
           <CardHeader>
             <CardTitle className="text-4xl font-bold">
-              Welcome to Administration
+              Welcome to Branch 
             </CardTitle>
             <CardDescription className="text-blue-200">
               Empowering communities through shared financial prosperity
