@@ -1,5 +1,5 @@
 "use client";
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { Card, CardHeader, CardTitle, CardContent, CardDescription } from "@/components/ui/card";
 import { Table, TableHeader, TableRow, TableHead, TableBody, TableCell } from "@/components/ui/table";
 import { Button } from "@/components/ui/button";
@@ -7,30 +7,86 @@ import NavBar from "@/components/ui/Navbar-supa";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Copy, ExternalLink } from "lucide-react";
+import axios from "axios";
 
 const AdminDashboard = () => {
-  
+  const [user, setUser] = useState(null);
+  const [account, setAccount] = useState({
+    account_no: "Loading...",
+    balance: 0,
+  });
+
+  const fetchUserDetails = async () => {
+    try {
+      const response = await axios.get("http://localhost:5000/api/user/330e8400-e29b-41d4-a716-446655440000");
+
+      setUser({
+        name: response.data.name,
+        email: response.data.email,
+      });
+
+      if (response.data?.accounts?.length > 0) {
+        setAccount({
+          account_no: response.data.accounts[0].account_no || "N/A",
+          balance: response.data.accounts[0].balance || 0,
+        });
+      } else {
+        setAccount({
+          account_no: "No Account",
+          balance: 0,
+        });
+      }
+    } catch (error) {
+      console.error("Error fetching user/account:", error);
+      setUser({
+        name: "Community Member",
+        email: "member@ourcoop.org",
+      });
+      setAccount({
+        account_no: "Error Loading",
+        balance: 0,
+      });
+    }
+  };
+
+  useEffect(() => {
+    fetchUserDetails();
+  }, []);
+
   return (
     <div className="min-h-screen bg-gray-50">
       <NavBar />
       <div className="max-w-7xl mx-auto px-4 py-8 space-y-8">
-        {/* Cooperative Banking Hero Section */}
-        <Card className="bg-gradient-to-r from-blue-800 to-indigo-900 text-white">
+        <Card className="bg-blue-50 border-blue-200">
           <CardHeader>
-            <CardTitle className="text-4xl font-bold">
-              Welcome to Branch 
+            <CardTitle className="text-3xl font-bold text-blue-800">
+              Welcome back, {user?.name || "Valued Member"}!
+              
+              <h1 className="py-2 text-red-900">Administration</h1>
             </CardTitle>
-            <CardDescription className="text-blue-200">
+            <CardDescription className="text-blue-600">
               Empowering communities through shared financial prosperity
             </CardDescription>
           </CardHeader>
           <CardContent>
-            <p className="text-lg text-blue-100">
+            <p className="text-lg text-blue-700">
               Welcome to the heart of our cooperative banking system. Here you'll manage the tools that 
               strengthen our community's financial foundation and ensure every member thrives.
             </p>
           </CardContent>
         </Card>
+
+        {/* Optional: Display account details */}
+        {/* <Card>
+          <CardHeader>
+            <CardTitle>Account Details</CardTitle>
+          </CardHeader>
+          <CardContent>
+            <p><strong>Account Number:</strong> {account.account_no}</p>
+            <p><strong>Balance:</strong> ₹{account.balance}</p>
+          </CardContent>
+        </Card> */}
+      
 
         {/* Cooperative Principles Showcase */}
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
@@ -116,9 +172,7 @@ const AdminDashboard = () => {
               </CardContent>
             </Card>
           </div>
-
-          
-          </div>
+         </div>
         </div>
       </div>
     
