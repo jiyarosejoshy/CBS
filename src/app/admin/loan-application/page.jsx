@@ -15,11 +15,12 @@ const LoansPage = () => {
   }, []);
 
   return (
-    <div flex-col justify-center items-center gap-10 h-screen left-5>
+    <div className="min-h-screen bg-gray-50">
       <NavBar />
-      <div style={{ maxWidth: "1200px", margin: "0 auto", padding: "100px" ,leftmargin:"10px"}}>
-      <div className="text-4xl font-semibold px-[325px]">Loan Informations</div>
-       
+  
+      <div className="max-w-[1200px] mx-auto px-5 pt-24">
+        <div className="text-4xl font-semibold text-center mb-10">Loan Information</div>
+  
         <Card>
           <CardContent>
             <Table>
@@ -56,7 +57,6 @@ const LoansPage = () => {
         </Card>
       </div>
     </div>
-  );
-};
-
+  )};
+  
 export default LoansPage;

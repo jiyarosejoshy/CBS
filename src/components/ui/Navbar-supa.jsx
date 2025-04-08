@@ -12,7 +12,7 @@ const NavBar = () => {
         
         <div className="flex gap-6 items-center">
           <NavLink href="/super-admin/dashboard">Dashboard</NavLink>
-          <NavLink href="/super-admin/approve-loan">Approvals</NavLink>
+          <NavLink href="/super-admin/view-loan">Approvals</NavLink>
         </div>
       </div>
     </nav>

@@ -1,5 +1,5 @@
 "use client";
-import React, { useState } from "react";
+import React, { useState ,useEffect} from "react";
 import { Card, CardHeader, CardTitle, CardContent, CardDescription } from "@/components/ui/card";
 import { Table, TableHeader, TableRow, TableHead, TableBody, TableCell } from "@/components/ui/table";
 import { Button } from "@/components/ui/button";
@@ -9,17 +9,41 @@ import { Label } from "@/components/ui/label";
 import { Copy, ExternalLink } from "lucide-react";
 
 const AdminDashboard = () => {
+  const [user, setUser] = useState(null);
+
+
+  const fetchUserDetails = async () => {
+    try {
+      const response = await axios.get("http://localhost:5000/api/user/2e656086-446e-4eac-9423-c7c70e8725e8");
+  
+      setUser({
+        name: response.data.name,
+        email: response.data.email,
+      });
+    } catch (error) {
+      console.error("Error fetching user details:", error);
+      setUser({
+        name: "Community Member",
+        email: "member@ourcoop.org",
+      });
+    }
+  };
+
+  useEffect(() => {
+    fetchUserDetails();
+  }, []);
   
   return (
     <div className="min-h-screen bg-gray-50">
       <NavBar />
       <div className="max-w-7xl mx-auto px-4 py-8 space-y-8">
-        {/* Cooperative Banking Hero Section */}
-        <Card className="bg-gradient-to-r from-blue-800 to-indigo-900 text-white">
-          <CardHeader>
-            <CardTitle className="text-4xl font-bold">
-              Welcome to Administration
-            </CardTitle>
+              <Card className="bg-blue-50 border-blue-200">
+                <CardHeader>
+                  <CardTitle className="text-3xl font-bold text-blue-800">
+                    Welcome back, {user?.name || "Valued Member"}!
+                    
+                    <h1 className="py-2 text-red-900">Administration</h1>
+                  </CardTitle>
             <CardDescription className="text-blue-200">
               Empowering communities through shared financial prosperity
             </CardDescription>
