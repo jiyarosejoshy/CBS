@@ -81,7 +81,7 @@ const LoanList = () => {
                   {loans.map((loan) => (
                     <tr key={loan.id}>
                       <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">{loan.id}</td>
-                      <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-700">${loan.amount}</td>
+                      <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-700">${loan.loan_amount}</td>
                       <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">{loan.branch}</td>
                     </tr>
                   ))}
