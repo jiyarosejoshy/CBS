@@ -13,7 +13,30 @@ const getTransactionsByBranch = async (branchName) => {
     }
     return data;
 };
-
+const getBranchs = async () => {
+    console.log("📡 [Model] getBranchs() called");
+  
+    const { data, error } = await supabase
+      .from("loans")
+      .select("*");
+  
+    if (error) {
+      console.error("❌ [Model] Supabase error:", error);
+      throw error;
+    }
+  
+    console.log("📦 [Model] Raw data received:", data);
+  
+    // Extract and filter unique branch names
+    const uniqueBranches = [...new Set(
+      data.map(item => item.branch).filter(branch => branch !== null)
+    )];
+  
+    console.log("🌿 [Model] Unique branches extracted:", uniqueBranches);
+  
+    return uniqueBranches;
+  };
+  
 // Get loans for a specific branch
 const getLoansByBranch = async (branchName) => {
     const { data, error } = await supabase
@@ -28,4 +51,4 @@ const getLoansByBranch = async (branchName) => {
     return data;
 };
 
-module.exports = { getTransactionsByBranch, getLoansByBranch };
+module.exports = { getBranchs,getTransactionsByBranch, getLoansByBranch };

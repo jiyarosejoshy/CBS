@@ -37,7 +37,9 @@ app.use('/api', userRoutes);
 app.use('/admin', adminRoutes);
 app.use('/api/transactions', transactionRoutes);
 app.use('/api/teller', tellerRoutes);
+
 app.use("/api/branch", superadminRoutes);
+
 
 // Basic error handling
 app.use((err, req, res, next) => {
