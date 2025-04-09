@@ -17,7 +17,8 @@ const TellerLogSystem = () => {
     trans_type: 'deposit',
     acc_no: '',
     first_name: '',
-    last_name: ''
+    last_name: '',
+    branch: ''
   });
   
   // Balance state
@@ -66,7 +67,8 @@ const TellerLogSystem = () => {
         trans_type: "opening_balance",
         acc_no: "SYSTEM",
         first_name: "System",
-        last_name: "Bank"
+        last_name: "Bank",
+        branch: "Branch_name"
       });
   
       // Update transactions state
@@ -153,7 +155,8 @@ const TellerLogSystem = () => {
         trans_type: formData.trans_type,
         acc_no: formData.acc_no,
         first_name: formData.first_name,
-        last_name: formData.last_name
+        last_name: formData.last_name,
+        branch: formData.branch,
       });
 
       setTransactions(prev => [newTransaction, ...prev]);
@@ -170,7 +173,8 @@ const TellerLogSystem = () => {
         trans_type: 'deposit',
         acc_no: '',
         first_name: '',
-        last_name: ''
+        last_name: '',
+        branch: '',
       });
     } catch (error) {
       setSubmitStatus({ 
@@ -329,6 +333,16 @@ const TellerLogSystem = () => {
                     id="last_name"
                     name="last_name"
                     value={formData.last_name}
+                    onChange={handleInputChange}
+                    required
+                  />
+                </div>
+                <div>
+                  <Label htmlFor="branch">Branch</Label>
+                  <Input
+                    id="branch"
+                    name="branch"
+                    value={formData.branch}
                     onChange={handleInputChange}
                     required
                   />
