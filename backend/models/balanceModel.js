@@ -69,8 +69,6 @@ const BalanceModel = {
         .gte("date", startOfDay.toISOString())
         .lte("date", endOfDay.toISOString())
 
-        
-
         if (error) throw error;
 
         let closingBalance = openingBalance;
