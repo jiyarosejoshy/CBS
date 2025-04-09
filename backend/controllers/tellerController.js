@@ -7,18 +7,21 @@ const BalanceModel = require("../models/balanceModel");
 // ✅ Log a new transaction in the teller table
 const logTransaction = async (req, res) => {
     try {
-        const { amount, trans_type, acc_no, first_name, last_name} = req.body;
-        if (!amount || !trans_type ) {
-            return res.status(400).json({ message: "All required fields must be provided" });
+        const { amount, trans_type, acc_no, first_name, last_name,branch} = req.body;
+        console.log(branch);
+        // Validate essential fields
+        if (!amount || !trans_type || !acc_no || !branch) {
+            return res.status(400).json({ message: "Required fields missing" });
         }
 
         const transaction = await TellerModel.createTellerTransaction(
-            amount, trans_type, acc_no, first_name, last_name
+            amount, trans_type, acc_no, first_name, last_name, branch
         );
 
         return res.status(201).json({ message: "Transaction logged successfully", transaction });
     } catch (error) {
         console.error("Error logging transaction:", error);
+        console.error(error); 
         return res.status(500).json({ message: "Internal Server Error" });
     }
 };
