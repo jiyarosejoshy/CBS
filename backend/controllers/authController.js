@@ -33,7 +33,7 @@ const loginUser = asyncHandler(async (req, res) => {
     const { email, password } = req.body;
     const user = await getUserByEmail(email);
 
-    if (!user || !(await bcrypt.compare(password, user.password))) {
+    if (!user || !(await bcrypt.compare(password, user.Password))) {
         res.status(401);
         throw new Error("Invalid credentials");
     }

@@ -1,7 +1,7 @@
 const asyncHandler = require('express-async-handler');
 const bcrypt = require('bcryptjs');
 const jwt = require('jsonwebtoken');
-const { getLoanIdsAndStatus,addLoanToDB,getLoans,getAllUsers, getUserDetails,getUserAccounts, createUser, updateUser, deleteUser } = require('../models/userModel');
+const { getLoanIdsAndStatus,addLoanToDB,getLoans,getAllUsers, getUserDetails,getUserAccounts, createUser, updateUser, deleteUser,getUserByEmail } = require('../models/userModel');
 const { v4: uuidv4 } = require('uuid'); // Import UUID generator
 const supabase = require('../config/supabase');
 
@@ -28,25 +28,34 @@ const registerUser = asyncHandler(async (req, res) => {
     });
 });
 
-// // ✅ Login user
+
 const loginUser = asyncHandler(async (req, res) => {
     const { email, password } = req.body;
-    const user = await getUserById(email);
-    console.log(user);
-
-    if (!user || !(await bcrypt.compare(password, user.password))) {
-        res.status(401);
-        throw new Error('Invalid credentials');
+  
+    const user = await getUserByEmail(email);
+  
+    if (!user) {
+      res.status(401);
+      throw new Error('User not found');
     }
-
+  
+    // Compare plain passwords directly
+    if (password !== user.Password) {
+      res.status(401);
+      throw new Error('Invalid credentials');
+    }
+  
+    // Return basic session-like data
     res.json({
-        id: user.id,
-        name: user.name,
-        email: user.email,
-        token: generateToken(user.id),
+      id: user.id,
+      name: user.name,
+      email: user.email,
+      role: user.role,
+      sessionId: user.id, // Can be treated like a session key
     });
-});
-
+  });
+  
+  
 // ✅ Get all users
 const getUsers = asyncHandler(async (req, res) => {
     const users = await getAllUsers();
