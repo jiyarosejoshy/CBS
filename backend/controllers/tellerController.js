@@ -60,10 +60,21 @@ const deleteTransaction = async (req, res) => {
 };
 
 // ✅ Get all transactions by date
+// const getTransactionsByDate = async (req, res) => {
+//     try {
+//         const { branch } = req.params;
+//         const transactions = await TellerModel.getTransactionsByDate(branch);
+
+//         return res.status(200).json({ transactions });
+//     } catch (error) {
+//         console.error("Error fetching transactions:", error);
+//         return res.status(500).json({ message: "Internal Server Error" });
+//     }
+// };
 const getTransactionsByDate = async (req, res) => {
     try {
-        const { branch } = req.params;
-        const transactions = await TellerModel.getTransactionsByDate(branch);
+        const { date } = req.params;
+        const transactions = await TellerModel.getTransactionsByDate(date);
 
         return res.status(200).json({ transactions });
     } catch (error) {
@@ -71,6 +82,7 @@ const getTransactionsByDate = async (req, res) => {
         return res.status(500).json({ message: "Internal Server Error" });
     }
 };
+
 
 // ✅ Set opening balance for a given date
 const setOpeningBalance = async (req, res) => {
