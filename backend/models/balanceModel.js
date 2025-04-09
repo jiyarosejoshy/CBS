@@ -56,11 +56,18 @@ const BalanceModel = {
         console.log(openingBalance);
         if (openingBalance === null) return null;
 
+        const startOfDay = new Date(date);
+        startOfDay.setHours(0, 0, 0, 0);
+
+        const endOfDay = new Date(date);
+        endOfDay.setHours(23, 59, 59, 999);
+
         const { data: transactions, error } = await supabase
-            .from("teller")
-            .select("amount, trans_type")
-            .eq("branch",branch)
-            .eq("date", date);
+        .from("teller")
+        .select("amount, trans_type")
+        .eq("branch", branch)
+        .gte("date", startOfDay.toISOString())
+        .lte("date", endOfDay.toISOString())
 
         
 

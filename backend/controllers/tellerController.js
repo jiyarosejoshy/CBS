@@ -105,6 +105,7 @@ const getClosingBalance = async (req, res) => {
     try {
         const { date,branch } = req.params;
         const closingBalance = await BalanceModel.calculateClosingBalance(date,branch);
+        console.log(closingBalance);
 
         if (closingBalance === null) {
             return res.status(404).json({ message: "Opening balance not found for this date" });
