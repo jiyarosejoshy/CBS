@@ -29,26 +29,37 @@ const registerUser = asyncHandler(async (req, res) => {
     });
 });
 
-// // ✅ Login user
+
 const loginUser = asyncHandler(async (req, res) => {
     const { email, password } = req.body;
-    const user = await getUserById(email);
-    console.log(user);
-
-    if (!user || !(await bcrypt.compare(password, user.password))) {
-        res.status(401);
-        throw new Error('Invalid credentials');
+  
+    const user = await getUserByEmail(email);
+  
+    if (!user) {
+      res.status(401);
+      throw new Error('User not found');
     }
-
+  
+    // Compare plain passwords directly
+    if (password !== user.Password) {
+      res.status(401);
+      throw new Error('Invalid credentials');
+    }
+  
+    // Return basic session-like data
     res.json({
-        id: user.id,
-        name: user.name,
-        email: user.email,
-        token: generateToken(user.id),
+      id: user.id,
+      name: user.name,
+      email: user.email,
+      role: user.role,
+      sessionId: user.id, // Can be treated like a session key
     });
 });
 
 
+  //  
+  
+  
 // ✅ Get all users
 const getUsers = asyncHandler(async (req, res) => {
     const users = await getAllUsers();
