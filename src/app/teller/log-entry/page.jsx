@@ -253,13 +253,13 @@ const TellerLogSystem = () => {
               <p className="text-lg text-blue-100">
                 Total transactions today: {transactions.length}
               </p>
-              <Button 
+              {/* <Button 
                 variant="outline" 
                 className="text-white border-white hover:bg-white/10"
                 onClick={() => fetchBalances(currentDate)}
               >
                 Refresh Balances
-              </Button>
+              </Button> */}
             </div>
           </CardContent>
         </Card>

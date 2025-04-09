@@ -41,8 +41,8 @@ const AdminDashboard = () => {
       <CardHeader>
         <CardTitle className="text-3xl font-bold text-blue-800">
           Welcome back, {user?.name || "Valued Member"}!
+          <h1 className="py-2 text-red-900">Branch Admin</h1>
         </CardTitle>
-        <h1 className="text-2xl font-bold text-red-900 py-2">Administration</h1>
         <CardDescription className="text-blue-800">
           Empowering communities through shared financial prosperity
         </CardDescription>
