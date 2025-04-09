@@ -6,6 +6,7 @@ import Paper from "@mui/material/Paper";
 import Navbar from "@/components/ui/Navbar-admin";
 import { createClient } from "@supabase/supabase-js";
 
+
 // ✅ Initialize Supabase globally (Prevents multiple instances)
 const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL;
 const supabaseKey = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY;
@@ -121,33 +122,69 @@ export default function DataTable() {
     };
   }, [isRealtime]);
 
-  return (
-    <div>
-      <Navbar />
-      <div className="flex flex-col justify-center items-center gap-10 h-screen">
-        <div className="text-4xl font-semibold">User Transactions</div>
-        {isRealtime ? (
-          <div className="text-green-600 text-sm">✅ Real-time updates enabled</div>
-        ) : (
-          <div className="text-gray-500 text-sm">🔄 Polling updates every 30s</div>
-        )}
-        {errorMessage && <div className="text-red-600 mb-4">{errorMessage}</div>}
-        <div className="w-3/4">
-          <Paper sx={{ height: 500, width: "100%" }}>
-            <DataGrid
-              rows={rows}
-              columns={columns}
-              pageSizeOptions={[5, 10, 25]}
-              initialState={{
-                pagination: { paginationModel: { pageSize: 10 } },
-              }}
-              pagination
-              loading={loading}
-              sx={{ border: 0 }}
-              disableRowSelectionOnClick
-            />
-          </Paper>
+  
+
+return (
+  <div className="min-h-screen bg-gray-50">
+    <Navbar />
+
+    <div className="flex flex-col items-center gap-6 pt-20 px-4">
+      <h1 className="text-4xl font-bold text-gray-800">User Transactions</h1>
+
+      {isRealtime ? (
+        <div className="text-green-600 text-sm">✅ Real-time updates enabled</div>
+      ) : (
+        <div className="text-gray-500 text-sm">🔄 Polling updates every 30s</div>
+      )}
+
+      {errorMessage && (
+        <div className="text-red-600 text-sm bg-red-100 p-2 rounded-md">
+          {errorMessage}
         </div>
+      )}
+
+      <div className="w-full max-w-6xl">
+        <Paper
+          elevation={3}
+          sx={{
+            height: 520,
+            width: "100%",
+            borderRadius: 2,
+            overflow: "hidden",
+            boxShadow: "0 4px 20px rgba(0, 0, 0, 0.05)",
+          }}
+        >
+          <DataGrid
+            rows={rows}
+            columns={columns}
+            pageSizeOptions={[5, 10, 25]}
+            initialState={{
+              pagination: { paginationModel: { pageSize: 10 } },
+            }}
+            pagination
+            loading={loading}
+            sx={{
+              border: 0,
+              fontFamily: "Inter, sans-serif",
+              "& .MuiDataGrid-columnHeaders": {
+                backgroundColor: "#f1f5f9",
+                fontWeight: "600",
+                fontSize: "0.9rem",
+              },
+              "& .MuiDataGrid-row": {
+                backgroundColor: "#fff",
+                "&:hover": {
+                  backgroundColor: "#f9fafb",
+                },
+              },
+              "& .MuiDataGrid-cell": {
+                fontSize: "0.875rem",
+              },
+            }}
+            disableRowSelectionOnClick
+          />
+        </Paper>
       </div>
     </div>
-  )};
+  </div>
+)}

@@ -49,6 +49,17 @@ const getUserByEmail = async (email) => {
   return data;
 };
 
+//user role identify
+const getUserDetail = async(email)=>{
+    const { data, error } = await supabase.from("users").select("name, role, branch").eq("email",email);
+    if (error) {
+        console.error("Error fetching teller details:", error);
+        throw error;
+    }
+    return data;
+
+}
+
 // ✅ Create a new user
 const createUser = async (name, email, passwordHash) => {
   const { data, error } = await supabase.from('users').insert([{ name, email, password: passwordHash }]).select().single();

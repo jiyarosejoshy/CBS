@@ -3,10 +3,10 @@ const router = express.Router();
 const TellerController = require("../controllers/tellerController");
 
 // ✅ Set the opening balance for a specific date
-router.post('/opening-balance', TellerController.setOpeningBalance);
+router.put('/opening-balance/:branch', TellerController.setOpeningBalance);
 
 // ✅ Get the opening balance for a specific date
-router.get('/opening-balance/:date', TellerController.getOpeningBalance);
+router.get('/opening-balance/:branch', TellerController.getOpeningBalance);
 
 // ✅ View opening and closing balances for all dates
 router.get('/balances', TellerController.getAllBalances);
@@ -24,6 +24,6 @@ router.delete('/transaction/:trans_id', TellerController.deleteTransaction);
 router.get('/transactions/:date', TellerController.getTransactionsByDate);
 
 // ✅ Calculate and get the closing balance for a specific date
-router.get('/closing-balance/:date', TellerController.getClosingBalance);
+router.get('/closing-balance/:date/:branch', TellerController.getClosingBalance);
 
 module.exports = router;

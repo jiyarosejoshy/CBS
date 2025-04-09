@@ -4,7 +4,6 @@ const TellerModel = require("../models/tellerModel");
 const BalanceModel = require("../models/balanceModel");
 
 
-
 // ✅ Log a new transaction in the teller table
 const logTransaction = async (req, res) => {
     try {
@@ -60,8 +59,8 @@ const deleteTransaction = async (req, res) => {
 // ✅ Get all transactions by date
 const getTransactionsByDate = async (req, res) => {
     try {
-        const { date } = req.params;
-        const transactions = await TellerModel.getTransactionsByDate(date);
+        const { branch } = req.params;
+        const transactions = await TellerModel.getTransactionsByDate(branch);
 
         return res.status(200).json({ transactions });
     } catch (error) {
@@ -73,26 +72,26 @@ const getTransactionsByDate = async (req, res) => {
 // ✅ Set opening balance for a given date
 const setOpeningBalance = async (req, res) => {
     try {
-        const { date, open } = req.body;
+        const { open } = req.body;
+        const { branch } = req.params;
 
-        if (!date || open === undefined) {
-            return res.status(400).json({ message: "Date and opening balance are required" });
+        if (!branch || open === undefined) {
+            return res.status(400).json({ message: "Branch and opening balance are required" });
         }
 
-        await BalanceModel.setOpeningBalance(date, open);
-        return res.status(200).json({ message: "Opening balance set successfully" });
+        const data = await BalanceModel.setOpeningBalance(branch, open);
+        return res.status(200).json({ message: "Opening balance set successfully", data });
     } catch (error) {
         console.error("Error setting opening balance:", error);
         return res.status(500).json({ message: "Internal Server Error" });
     }
 };
-
 // ✅ Get opening balance for a given date
 const getOpeningBalance = async (req, res) => {
     try {
-        const { date } = req.params;
-        console.log("Fetching opening balance for date:", date);
-        const openBalance = await BalanceModel.getOpeningBalance(date);
+        const { branch } = req.params;
+        console.log("Fetching opening balance for date:", branch);
+        const openBalance = await BalanceModel.getOpeningBalance(branch);
 
         return res.status(200).json({ openBalance });
     } catch (error) {
@@ -104,8 +103,9 @@ const getOpeningBalance = async (req, res) => {
 // ✅ Calculate closing balance based on transactions for the day
 const getClosingBalance = async (req, res) => {
     try {
-        const { date } = req.params;
-        const closingBalance = await BalanceModel.calculateClosingBalance(date);
+        const { date,branch } = req.params;
+        const closingBalance = await BalanceModel.calculateClosingBalance(date,branch);
+        console.log(closingBalance);
 
         if (closingBalance === null) {
             return res.status(404).json({ message: "Opening balance not found for this date" });

@@ -1,9 +1,10 @@
 const asyncHandler = require('express-async-handler');
 const bcrypt = require('bcryptjs');
 const jwt = require('jsonwebtoken');
-const { getLoanIdsAndStatus,addLoanToDB,getLoans,getAllUsers, getUserDetails,getUserAccounts, createUser, updateUser, deleteUser,getUserByEmail } = require('../models/userModel');
+const { getLoanIdsAndStatus,addLoanToDB,getUserByEmail, getLoans,getAllUsers, getUserDetails,getUserAccounts, createUser, updateUser, deleteUser } = require('../models/userModel');
 const { v4: uuidv4 } = require('uuid'); // Import UUID generator
 const supabase = require('../config/supabase');
+
 
 // ✅ Register a new user
 const registerUser = asyncHandler(async (req, res) => {
@@ -53,6 +54,9 @@ const loginUser = asyncHandler(async (req, res) => {
       role: user.role,
       sessionId: user.id, // Can be treated like a session key
     });
+});
+
+
   });
   
   
@@ -168,4 +172,4 @@ const fetchLoanIdsAndStatus = async (req, res) => {
   };
 
 
-module.exports = { fetchLoanIdsAndStatus, getLoanIdsAndStatus,addLoan,fetchLoans,getUserAccountDetails,registerUser, loginUser, getUsers, updateUserProfile, removeUser };
+module.exports = { fetchLoanIdsAndStatus, getLoanIdsAndStatus,addLoan,fetchLoans,getUserAccountDetails,registerUser, loginUser, getUsers, updateUserProfile, removeUser};
