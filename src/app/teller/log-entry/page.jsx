@@ -91,7 +91,8 @@ const TellerLogSystem = () => {
   // Fetch transactions and balances for a date
   const fetchTransactions = async (date) => {
     try {
-      const response = await axios.get(`http://localhost:5000/api/teller/transaction/${date}`);
+      console.log(date);
+      const response = await axios.get(`http://localhost:5000/api/teller/transactions/${date}`);
       setTransactions(response.data.transactions || []);
     } catch (error) {
       console.error("Error fetching transactions:", error);
@@ -112,10 +113,10 @@ const TellerLogSystem = () => {
     }
   }
 
-  const fetchBalances = async (date) => {
+  const fetchBalances = async (branch) => {
     try {
       const [openBalRes, closeBalRes] = await Promise.all([
-        axios.get(`http://localhost:5000/api/teller/opening-balance/${date}`),
+        axios.get(`http://localhost:5000/api/teller/opening-balance/${branch}`),
       ]);
       
       setOpeningBalance(openBalRes.data.openBalance);
@@ -257,13 +258,13 @@ const TellerLogSystem = () => {
               <p className="text-lg text-blue-100">
                 Total transactions today: {transactions.length}
               </p>
-              <Button 
+              {/* <Button 
                 variant="outline" 
                 className="text-white border-white hover:bg-white/10"
                 onClick={() => fetchBalances(currentDate)}
               >
                 Refresh Balances
-              </Button>
+              </Button> */}
             </div>
           </CardContent>
         </Card>

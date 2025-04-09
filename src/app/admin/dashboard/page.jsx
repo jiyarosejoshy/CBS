@@ -7,8 +7,7 @@ import NavBar from "@/components/ui/Navbar-admin";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Copy, ExternalLink } from "lucide-react";
-import axios from "axios";
-
+import axios from 'axios';
 const AdminDashboard = () => {
   const [user, setUser] = useState(null);
   const [loading, setLoading] = useState(true);
@@ -41,8 +40,8 @@ const AdminDashboard = () => {
       <CardHeader>
         <CardTitle className="text-3xl font-bold text-blue-800">
           Welcome back, {user?.name || "Valued Member"}!
+          <h1 className="py-2 text-red-900">Branch Admin</h1>
         </CardTitle>
-        <h1 className="text-2xl font-bold text-red-900 py-2">Administration</h1>
         <CardDescription className="text-blue-800">
           Empowering communities through shared financial prosperity
         </CardDescription>

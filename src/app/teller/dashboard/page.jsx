@@ -27,7 +27,7 @@ const TellerDashboard = () => {
       <NavBar />
       <div className="max-w-7xl mx-auto px-4 py-8 space-y-8">
         {/* Teller Operations Hero Section */}
-        <Card className="bg-gradient-to-r from-blue-800 to-indigo-900 text-white">
+        <Card className="bg-blue-50 border border-blue-200">
           <CardHeader>
             <div className="flex justify-between items-start">
               <div>
@@ -36,10 +36,10 @@ const TellerDashboard = () => {
                     <Wallet className="h-8 w-8" />
                   </div>
                   <div>
-                    <CardTitle className="text-4xl font-bold">
+                   <CardTitle className="text-3xl font-bold text-blue-800">
                       Welcome to Teller Operations
                     </CardTitle>
-                    <CardDescription className="text-blue-200 text-lg mt-1">
+                    <CardDescription className="text-blue-800  mt-1">
                       Your gateway to seamless banking services
                     </CardDescription>
                   </div>
@@ -47,13 +47,13 @@ const TellerDashboard = () => {
                 
                 <CardContent className="px-0">
                   <div className="space-y-4">
-                    <p className="text-lg text-blue-100 leading-relaxed">
+                    <p className="text-blue-700 leading-relaxed">
                       As a valued teller of our cooperative bank, you play a pivotal role in delivering 
                       exceptional service to our members while maintaining the highest standards of 
                       financial accuracy and security.
                     </p>
                     {currentTime && (
-                      <div className="flex items-center gap-2 text-blue-200">
+                      <div className="flex items-center gap-2 text-blue-800">
                         <Clock className="h-5 w-5" />
                         <span>Last login: Today at {currentTime}</span>
                       </div>
@@ -63,10 +63,6 @@ const TellerDashboard = () => {
               </div>
               
               <div className="flex items-center space-x-4">
-                <Button variant="ghost" size="icon" className="text-blue-200 hover:text-white hover:bg-blue-700/50">
-                  <Bell className="h-5 w-5" />
-                  <span className="sr-only">Notifications</span>
-                </Button>
                 <div className="flex items-center space-x-2 bg-blue-700/50 px-3 py-1 rounded-full">
                   <User className="h-8 w-8 rounded-full bg-blue-500 p-1" />
                   <div>
@@ -79,21 +75,33 @@ const TellerDashboard = () => {
           </CardHeader>
           <CardContent>
             <div className="flex justify-between items-center">
-              <p className="text-lg text-blue-100">
-                Your role is crucial in maintaining accurate transaction records and ensuring smooth daily operations.
-              </p>
               <div className="flex items-center space-x-4">
-                <div className="bg-blue-700 px-4 py-2 rounded-lg text-center">
-                  <div className="text-blue-200 text-sm">Cash Balance</div>
-                  <div className="text-2xl font-bold">₹{cashBalance.toLocaleString()}</div>
-                </div>
-                <Button 
-                  onClick={toggleBankStatus}
-                  className={`flex items-center gap-2 ${isBankOpen ? 'bg-red-600 hover:bg-red-700' : 'bg-green-600 hover:bg-green-700'}`}
-                >
-                  {isBankOpen ? <Lock className="h-4 w-4" /> : <Unlock className="h-4 w-4" />}
-                  {isBankOpen ? 'Close Bank' : 'Open Bank'}
-                </Button>
+              <div className="bg-gradient-to-r from-blue-600 to-blue-800 text-white p-3 rounded-2xl shadow-md text-center">
+                <div className="text-sm tracking-wide text-blue-100 mb-1">Cash Balance</div>
+                <div className="text-3xl font-extrabold">₹{cashBalance.toLocaleString()}</div>
+              </div>
+
+              <Button
+                onClick={toggleBankStatus}
+                className={`h-[85px] px-6 flex items-center justify-center gap-3 rounded-2xl font-semibold text-base transition-all duration-200 shadow-sm ${
+                  isBankOpen
+                    ? 'bg-red-100 text-red-800 border border-red-700 hover:bg-red-200'
+                    : 'bg-green-100 text-green-800 border border-green-900 hover:bg-green-200'
+                }`}
+              >
+                {isBankOpen ? (
+                  <>
+                    <Lock className="h-5 w-5" />
+                    Close Bank
+                  </>
+                ) : (
+                  <>
+                    <Unlock className="h-5 w-5" />
+                    Open Bank
+                  </>
+                )}
+              </Button>
+
               </div>
             </div>
           </CardContent>
@@ -186,8 +194,6 @@ const TellerDashboard = () => {
             </div>
           </CardContent>
         </Card>
-
-        {/* Rest of your components... */}
       </div>
     </div>
   );
