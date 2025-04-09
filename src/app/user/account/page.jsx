@@ -119,7 +119,7 @@ const AccountPage = () => {
                   <div>
                     <Label className="text-gray-600">Current Balance</Label>
                     <p className="text-2xl font-bold text-green-600 mt-1">
-                      {account ? `$${account.balance.toLocaleString()}` : (
+                      {account ? `${account.balance.toLocaleString()}` : (
                         <span className="animate-pulse">Loading...</span>
                       )}
                     </p>
@@ -170,7 +170,7 @@ const AccountPage = () => {
                         </span>
                       </TableCell>
                       <TableCell className="text-right">
-                        ${tx.amount.toLocaleString()}
+                        {tx.amount.toLocaleString()}
                       </TableCell>
                     </TableRow>
                   ))}

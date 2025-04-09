@@ -42,13 +42,13 @@ const LoansPage = () => {
                   <TableRow key={loan.id}>
                     <TableCell>{loan.loan_id}</TableCell>
                     <TableCell>{loan.loan_type}</TableCell>
-                    <TableCell>{`$${loan.loan_amount.toLocaleString()}`}</TableCell>
+                    <TableCell>{`${loan.loan_amount.toLocaleString()}`}</TableCell>
                     <TableCell>{loan.interest_rate}%</TableCell>
                     <TableCell>{loan.start_date}</TableCell>
                     <TableCell>{loan.end_date}</TableCell>
                     <TableCell>{loan.status}</TableCell>
                     <TableCell>{loan.collateral_type}</TableCell>
-                    <TableCell>{loan.collateral_value ? `$${loan.collateral_value.toLocaleString()}` : "None"}</TableCell>
+                    <TableCell>{loan.collateral_value ? `${loan.collateral_value.toLocaleString()}` : "None"}</TableCell>
                   </TableRow>
                 ))}
               </TableBody>
