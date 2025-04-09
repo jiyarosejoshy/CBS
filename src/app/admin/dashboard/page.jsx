@@ -7,8 +7,7 @@ import NavBar from "@/components/ui/Navbar-admin";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Copy, ExternalLink } from "lucide-react";
-import axios from "axios";
-
+import axios from 'axios';
 const AdminDashboard = () => {
   const [user, setUser] = useState(null);
   const [loading, setLoading] = useState(true);
