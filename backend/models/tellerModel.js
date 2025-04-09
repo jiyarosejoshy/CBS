@@ -29,6 +29,25 @@ const createTellerTransaction = async( amount, trans_type, acc_no, first_name, l
     return data;
 };
 
+const getTransactionsByDate = async (date) => {
+    const startOfDay = `${date}T00:00:00.000Z`;
+    const endOfDay = `${date}T23:59:59.999Z`;
+
+    const { data, error } = await supabase
+        .from("teller")
+        .select("*")
+        .gte("date", startOfDay)
+        .lte("date", endOfDay);
+
+    if (error) {
+        console.error("Error fetching transactions by date:", error);
+        throw error;
+    }
+
+    return data;
+};
+
+
 // ✅ Get all teller transactions
 const getAllTellerTransactions = async () => {
     const { data, error } = await supabase.from("teller").select("*");
@@ -96,5 +115,6 @@ module.exports = {
     getAllTellerTransactions,
     getTellerTransactionById,
     updateTellerTransaction,
-    deleteTellerTransaction
+    deleteTellerTransaction,
+    getTransactionsByDate
 };
