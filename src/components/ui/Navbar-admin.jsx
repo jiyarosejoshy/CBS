@@ -1,6 +1,16 @@
+"use client";
 import Link from "next/link";
+import { useRouter } from "next/navigation";
+import { LogOut } from "lucide-react";
 
 const NavBar = () => {
+  const router = useRouter();
+
+  const handleLogout = () => {
+    localStorage.removeItem("token"); // Remove token from localStorage
+    router.push("/"); // Redirect to home/login
+  };
+
   return (
     <nav className="bg-gradient-to-r from-red-900 to-indigo-900 p-4 shadow-lg">
       <div className="max-w-6xl mx-auto flex justify-between items-center">
@@ -9,12 +19,17 @@ const NavBar = () => {
             BankERP
           </h1>
         </Link>
-        
+
         <div className="flex gap-6 items-center">
           <NavLink href="/admin/dashboard">Dashboard</NavLink>
           <NavLink href="/admin/user-transaction">User Transactions</NavLink>
           <NavLink href="/admin/approve-reject">Approvals</NavLink>
           <NavLink href="/admin/loan-application">Loan Applications</NavLink>
+
+           <button onClick={handleLogout} className="hover:opacity-80 transition">
+            <LogOut className="w-6 h-6 text-white" />
+          
+      </button>
         </div>
       </div>
     </nav>
@@ -33,3 +48,4 @@ const NavLink = ({ href, children }) => {
 };
 
 export default NavBar;
+
